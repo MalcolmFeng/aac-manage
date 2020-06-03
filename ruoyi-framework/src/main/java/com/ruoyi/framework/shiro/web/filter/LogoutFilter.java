@@ -4,10 +4,17 @@ import java.io.Serializable;
 import java.util.Deque;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+
+import com.ruoyi.framework.util.TokenUtils;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.session.SessionException;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
@@ -24,79 +31,34 @@ import com.ruoyi.system.domain.SysUser;
  * 
  * @author ruoyi
  */
-public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
+public class LogoutFilter extends AccessControlFilter
 {
     private static final Logger log = LoggerFactory.getLogger(LogoutFilter.class);
 
-    /**
-     * 退出后重定向的地址
-     */
-    private String loginUrl;
-
-    private Cache<String, Deque<Serializable>> cache;
-
-    public String getLoginUrl()
-    {
-        return loginUrl;
-    }
-
-    public void setLoginUrl(String loginUrl)
-    {
-        this.loginUrl = loginUrl;
-    }
-
     @Override
-    protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception
-    {
-        try
-        {
-            Subject subject = getSubject(request, response);
-            String redirectUrl = getRedirectUrl(request, response, subject);
-            try
-            {
-                SysUser user = ShiroUtils.getSysUser();
-                if (StringUtils.isNotNull(user))
-                {
-                    String loginName = user.getLoginName();
-                    // 记录用户退出日志
-                    AsyncManager.me().execute(AsyncFactory.recordLogininfor(loginName, Constants.LOGOUT, MessageUtils.message("user.logout.success")));
-                    // 清理缓存
-                    cache.remove(loginName);
-                }
-                // 退出登录
-                subject.logout();
-            }
-            catch (SessionException ise)
-            {
-                log.error("logout fail.", ise);
-            }
-            issueRedirect(request, response, redirectUrl);
-        }
-        catch (Exception e)
-        {
-            log.error("Encountered session exception during logout.  This can generally safely be ignored.", e);
-        }
+    protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         return false;
     }
 
-    /**
-     * 退出跳转URL
-     */
     @Override
-    protected String getRedirectUrl(ServletRequest request, ServletResponse response, Subject subject)
-    {
-        String url = getLoginUrl();
-        if (StringUtils.isNotEmpty(url))
-        {
-            return url;
-        }
-        return super.getRedirectUrl(request, response, subject);
-    }
+    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
+        HttpServletRequest request = (HttpServletRequest)servletRequest;
+        HttpServletResponse response = (HttpServletResponse)servletResponse;
+        HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper((HttpServletResponse) servletResponse);
+        // 重写cookie的过期时间为0，让token失效；
+        Cookie cookie = new Cookie("token", "x");
+        cookie.setMaxAge(0);// 设置为30min
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
-    // 设置Cache的key的前缀
-    public void setCacheManager(CacheManager cacheManager)
-    {
-        // 必须和ehcache缓存配置中的缓存name一致
-        this.cache = cacheManager.getCache(ShiroConstants.SYS_USERCACHE);
+        Cookie cookie2 = new Cookie("JSESSIONID", "x");
+        cookie2.setMaxAge(0);// 设置为30min
+        cookie2.setPath("/");
+        response.addCookie(cookie2);
+
+
+        wrapper.sendRedirect("http://localhost");
+
+        return false;
     }
 }
