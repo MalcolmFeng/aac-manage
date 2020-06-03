@@ -21,7 +21,7 @@
 				<div class="col-sm-8">
 					<label class="radio-box"> <input type="radio" name="menuType" value="M" /> 目录 </label> 
 					<label class="radio-box"> <input type="radio" name="menuType" value="C" /> 菜单 </label> 
-					<label class="radio-box"> <input type="radio" name="menuType" value="F" /> 按钮 </label>
+					<label class="radio-box"> <input type="radio" name="menuType" value="F" /> 功能接口 </label>
 				</div>
 			</div>
 			<div class="form-group">
@@ -154,7 +154,7 @@
                     $("#target").parents(".form-group").show();
                     $("input[name='visible']").parents(".form-group").show();
                 } else if (menuType == "F") {
-                	$("#url").parents(".form-group").hide();
+                	$("#url").parents(".form-group").show();
                     $("#perms").parents(".form-group").show();
                     $("#icon").parents(".form-group").hide();
                     $("#target").parents(".form-group").hide();
