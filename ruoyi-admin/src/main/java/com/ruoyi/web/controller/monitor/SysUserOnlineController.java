@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.monitor;
 
 import java.util.List;
+
+import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import com.ruoyi.framework.shiro.session.OnlineSessionDAO;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.ISysUserOnlineService;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 在线用户监控
@@ -40,9 +43,12 @@ public class SysUserOnlineController extends BaseController
 
 //    @RequiresPermissions("monitor:online:view")
     @GetMapping()
-    public String online()
+    public ModelAndView online()
     {
-        return prefix + "/online";
+        ModelAndView modelAndView = MVConstructor.MVConstruct();
+        modelAndView.setViewName(prefix+"/online");
+        return modelAndView;
+//        return prefix + "/online";
     }
 
 //    @RequiresPermissions("monitor:online:list")

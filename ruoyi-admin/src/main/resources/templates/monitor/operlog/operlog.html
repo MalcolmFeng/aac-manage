@@ -64,7 +64,7 @@
 	<th:block th:include="include :: footer" />
 	<th:block th:include="include :: bootstrap-select-js" />
 	<script th:inline="javascript">
-		var detailFlag = [[${@permission.hasPermi('monitor:operlog:detail')}]];
+		var detailFlag = [[ ${#strings.contains(perms,'monitor:operlog:detail') || #strings.contains(perms,'*:*:*')}]];
 		var datas = [[${@dict.getType('sys_oper_type')}]];
 		var prefix = ctx + "monitor/operlog";
 

@@ -38,7 +38,7 @@
 	</div>
 	<th:block th:include="include :: footer" />
 	<script th:inline="javascript">
-		var forceFlag = [[${@permission.hasPermi('monitor:online:forceLogout')}]];
+		var forceFlag = [[ ${#strings.contains(perms,'monitor:online:forceLogout') || #strings.contains(perms,'*:*:*')}]];
 		var prefix = ctx + "monitor/online";
 
 		$(function() {

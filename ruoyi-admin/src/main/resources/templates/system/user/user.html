@@ -90,9 +90,9 @@
 	<th:block th:include="include :: layout-latest-js" />
 	<th:block th:include="include :: ztree-js" />
 	<script th:inline="javascript">
-		var editFlag = [[${@permission.hasPermi('system:user:edit')}]];
-		var removeFlag = [[${@permission.hasPermi('system:user:remove')}]];
-		var resetPwdFlag = [[${@permission.hasPermi('system:user:resetPwd')}]];
+		var editFlag = [[ ${#strings.contains(perms,'system:user:edit') || #strings.contains(perms,'*:*:*')}]];
+		var removeFlag = [[ ${#strings.contains(perms,'system:user:remove') || #strings.contains(perms,'*:*:*')}]];
+		var resetPwdFlag = [[ ${#strings.contains(perms,'system:user:resetPwd') || #strings.contains(perms,'*:*:*')}]];
 		var prefix = ctx + "system/user";
 
 		$(function() {

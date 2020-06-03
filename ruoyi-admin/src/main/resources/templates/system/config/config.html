@@ -61,8 +61,8 @@
 	</div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:config:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:config:remove')}]];
+        var editFlag = [[ ${#strings.contains(perms,'system:config:edit') || #strings.contains(perms,'*:*:*')}]];
+        var removeFlag = [[ ${#strings.contains(perms,'system:config:remove') || #strings.contains(perms,'*:*:*')}]];
         var datas = [[${@dict.getType('sys_yes_no')}]];
         var prefix = ctx + "system/config";
 

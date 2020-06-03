@@ -50,8 +50,8 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:notice:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:notice:remove')}]];
+        var editFlag = [[ ${#strings.contains(perms,'system:notice:edit') || #strings.contains(perms,'*:*:*')}]];
+        var removeFlag = [[ ${#strings.contains(perms,'system:notice:remove') || #strings.contains(perms,'*:*:*')}]];
         var types = [[${@dict.getType('sys_notice_type')}]];
         var datas = [[${@dict.getType('sys_notice_status')}]];
         var prefix = ctx + "system/notice";

@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.monitor;
 
 import java.util.List;
 import com.ruoyi.framework.shiro.service.SysPasswordService;
+import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysLogininfor;
 import com.ruoyi.system.service.ISysLogininforService;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 系统访问记录
@@ -37,9 +39,12 @@ public class SysLogininforController extends BaseController
 
 //    @RequiresPermissions("monitor:logininfor:view")
     @GetMapping()
-    public String logininfor()
+    public ModelAndView logininfor()
     {
-        return prefix + "/logininfor";
+        ModelAndView modelAndView = MVConstructor.MVConstruct();
+        modelAndView.setViewName(prefix+"/logininfor");
+        return modelAndView;
+//        return prefix + "/logininfor";
     }
 
 //    @RequiresPermissions("monitor:logininfor:list")

@@ -38,11 +38,12 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/common")
+@CrossOrigin
 public class PageController extends BaseController
 {
     private String prefix = "error";
 
-    @GetMapping("/notFound")
+    @RequestMapping(value = "/notFound",method = RequestMethod.GET)
     public ModelAndView notFound(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = new ModelAndView();
@@ -50,7 +51,7 @@ public class PageController extends BaseController
         return modelAndView;
     }
 
-    @GetMapping("/error")
+    @RequestMapping(value = "/error",method = RequestMethod.GET)
     public ModelAndView error(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = new ModelAndView();
@@ -58,7 +59,7 @@ public class PageController extends BaseController
         return modelAndView;
     }
 
-    @GetMapping("/unauth")
+    @RequestMapping(value = "/unauth",method = RequestMethod.GET)
     public ModelAndView unauth(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = new ModelAndView();

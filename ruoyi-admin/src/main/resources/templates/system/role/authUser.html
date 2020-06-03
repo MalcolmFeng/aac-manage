@@ -45,8 +45,8 @@
 	</div>
 	<th:block th:include="include :: footer" />
 	<script th:inline="javascript">
-		var removeFlag = [[${@permission.hasPermi('system:role:remove')}]];
-		var datas = [[${@dict.getType('sys_normal_disable')}]];
+		var removeFlag = [[ ${#strings.contains(perms,'system:role:remove') || #strings.contains(perms,'*:*:*')}]];
+		var datas = [[${@dict.getType('sys_normal_disable')} ]];
 		var prefix = ctx + "system/role/authUser";
 
 		$(function() {

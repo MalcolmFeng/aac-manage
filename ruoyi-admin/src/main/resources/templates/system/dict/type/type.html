@@ -62,9 +62,9 @@
 	</div>
 	<th:block th:include="include :: footer" />
 	<script th:inline="javascript">
-		var editFlag = [[${@permission.hasPermi('system:dict:edit')}]];
-		var listFlag = [[${@permission.hasPermi('system:dict:list')}]];
-		var removeFlag = [[${@permission.hasPermi('system:dict:remove')}]];
+		var editFlag = [[ ${#strings.contains(perms,'system:dict:edit') || #strings.contains(perms,'*:*:*')}]];
+		var listFlag = [[ ${#strings.contains(perms,'system:dict:list') || #strings.contains(perms,'*:*:*')}]];
+		var removeFlag = [[ ${#strings.contains(perms,'system:dict:remove') || #strings.contains(perms,'*:*:*')}]];
 		var datas = [[${@dict.getType('sys_normal_disable')}]];
 		var prefix = ctx + "system/dict";
 
