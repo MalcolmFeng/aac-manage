@@ -13,7 +13,7 @@ import java.util.Date;
 
 public class JWTUtil {
 
-    public static String SECRET = "entfrm";
+    public static String SECRET = "inspurhealth";
     public static int EXPIRE_TIME= 60*60*1000;
     public static final Algorithm ALGORITHM= Algorithm.HMAC256("$2a$10$qoeNogET3slC24x24FdrNO");
     public static final JWTVerifier JWT_VERIFIER= JWT.require(ALGORITHM).withIssuer(SECRET).build();
@@ -60,6 +60,13 @@ public class JWTUtil {
         return username;
     }
 
+    public static JSONObject getPayLoadJsonByJWT(String jwt){
+        String[] jwts = jwt.split("\\.");
+        String headerJson = StringUtils.newStringUtf8(Base64.decodeBase64(jwts[0]));
+        String payloadJson = StringUtils.newStringUtf8(Base64.decodeBase64(jwts[1]));
+        JSONObject payload = JSON.parseObject(payloadJson);
+        return payload;
+    }
 
     /**
      * 测试

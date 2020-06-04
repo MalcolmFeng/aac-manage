@@ -1,11 +1,13 @@
 package com.ruoyi.framework.shiro.web.filter;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
+import com.ruoyi.system.utils.JWTUtil;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -82,6 +84,11 @@ public class TokenAuthenFilter extends AccessControlFilter {
                 }catch (Exception e){
                     System.out.println(e.toString());
                 }
+
+//                JSONObject payLoad = JWTUtil.getPayLoadJsonByJWT(token);
+//                String roleSetString = payLoad.getString("rolesSet");
+//                String uri = request.getRequestURI();
+
             }catch (Exception e){
                 System.out.println(e.toString());
             }
