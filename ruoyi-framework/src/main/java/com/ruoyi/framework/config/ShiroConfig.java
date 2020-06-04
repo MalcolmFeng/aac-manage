@@ -255,7 +255,14 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/ruoyi/**", "anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
-        // 退出 logout地址，shiro去清除session
+        filterChainDefinitionMap.put("/system/user/profile/resetPwd","anon");
+        filterChainDefinitionMap.put("/system/user/profile/checkPassword","anon");
+        filterChainDefinitionMap.put("/system/user/profile*","anon");
+        filterChainDefinitionMap.put("/system/switchSkin","anon");
+        filterChainDefinitionMap.put("/demo/**","anon");
+        filterChainDefinitionMap.put("/index","anon");
+
+        // 退出filter
         filterChainDefinitionMap.put("/logout", "logout");
         // 不需要拦截的访问
         filterChainDefinitionMap.put("/login", "anon,captchaValidate");
