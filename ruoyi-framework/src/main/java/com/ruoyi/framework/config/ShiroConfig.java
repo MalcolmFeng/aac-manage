@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.servlet.Filter;
 
+import com.ruoyi.framework.shiro.web.filter.CodeTokenHandlerFilter;
 import com.ruoyi.framework.shiro.web.filter.TokenAuthenFilter;
 import com.ruoyi.framework.shiro.web.filter.TokenCheckFilter;
 import org.apache.commons.io.IOUtils;
@@ -243,7 +244,7 @@ public class ShiroConfig
         // Shiro连接约束配置，即过滤链的定义
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 对静态资源设置匿名访问
-        filterChainDefinitionMap.put("/handler/*", "anon");  // 认证中心回调code的，不要拦截
+        filterChainDefinitionMap.put("/handler/*", "codeTokenHandlerFilter");
         filterChainDefinitionMap.put("/common/*","anon");
         filterChainDefinitionMap.put("/favicon.ico**", "anon");
         filterChainDefinitionMap.put("/ruoyi.png**", "anon");
@@ -280,6 +281,7 @@ public class ShiroConfig
         filters.put("logout", logoutFilter());
         filters.put("tokenCheckFilter", tokenCheckFilter());
         filters.put("tokenAuthen",tokenAuthenFilter());
+        filters.put("codeTokenHandlerFilter",codeTokenHandlerFilter());
         shiroFilterFactoryBean.setFilters(filters);
 
         // 所有请求需要认证
@@ -290,6 +292,9 @@ public class ShiroConfig
         return shiroFilterFactoryBean;
     }
 
+    public CodeTokenHandlerFilter codeTokenHandlerFilter(){
+        return new CodeTokenHandlerFilter();
+    }
     public TokenAuthenFilter tokenAuthenFilter(){
         return new TokenAuthenFilter();
     }
