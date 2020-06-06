@@ -4,9 +4,11 @@ import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import org.apache.shiro.web.filter.AccessControlFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -24,9 +26,10 @@ import java.util.Map;
  */
 public class CodeTokenHandlerFilter extends AccessControlFilter {
 
-    public static int EXPIRE_TIME = 60 * 60 * 1000;
-    public static String redirect_url = "http://localhost:80/handler/code?target=";
-    public static String getTokenUrl = "http://localhost:7002/oauth/token";
+    private String authServer = "http://localhost:7002";
+    private String clientId = "tencent";
+    private String clientSecret = "123456";
+
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
@@ -39,13 +42,13 @@ public class CodeTokenHandlerFilter extends AccessControlFilter {
             MultiValueMap<String, String> formData1 = new LinkedMultiValueMap<>();
             formData1.add("grant_type", "authorization_code");
             formData1.add("scope", "all");
-            formData1.add("redirect_uri", redirect_url + target);
+            formData1.add("redirect_uri", request.getRequestURL().toString() +"?target=" + target);
             formData1.add("code", code);
 
             HttpHeaders headers1 = new HttpHeaders();
-            headers1.set("Authorization", "Basic dGVuY2VudDoxMjM0NTY=");  // client-id: tencent
+            headers1.set("Authorization", "Basic " + Base64.getUrlEncoder().encodeToString(( clientId+ ":" + clientSecret).getBytes()));  // client-id: tencent
 
-            Map map = (Map) new RestTemplate().exchange( getTokenUrl, HttpMethod.POST, new HttpEntity(formData1, headers1), Map.class, new Object[0]).getBody();
+            Map map = (Map) new RestTemplate().exchange( authServer + "/oauth/token", HttpMethod.POST, new HttpEntity(formData1, headers1), Map.class, new Object[0]).getBody();
             String token = (String) map.get("access_token");
 
             request.setAttribute("token",token);
@@ -65,7 +68,7 @@ public class CodeTokenHandlerFilter extends AccessControlFilter {
 
         // 写入cookie
         Cookie cookie = new Cookie("token", token);
-        cookie.setMaxAge(EXPIRE_TIME);// 设置为30min
+        cookie.setMaxAge(120 * 60 * 1000);// 设置为30min
         cookie.setPath("/");
         response.addCookie(cookie);
 

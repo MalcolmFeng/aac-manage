@@ -244,7 +244,7 @@ public class ShiroConfig
         // Shiro连接约束配置，即过滤链的定义
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 对静态资源设置匿名访问
-        filterChainDefinitionMap.put("/handler/*", "codeTokenHandlerFilter");
+        filterChainDefinitionMap.put("/handler/*", "anon");
         filterChainDefinitionMap.put("/common/*","anon");
         filterChainDefinitionMap.put("/favicon.ico**", "anon");
         filterChainDefinitionMap.put("/ruoyi.png**", "anon");
@@ -260,7 +260,7 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/system/user/profile/checkPassword","anon");
         filterChainDefinitionMap.put("/system/user/profile*","anon");
         filterChainDefinitionMap.put("/system/switchSkin","anon");
-        filterChainDefinitionMap.put("/demo/**","anon");
+//        filterChainDefinitionMap.put("/demo/**","anon");
         filterChainDefinitionMap.put("/index","anon");
 
         // 退出filter

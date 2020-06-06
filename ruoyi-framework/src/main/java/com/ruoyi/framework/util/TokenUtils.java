@@ -1,7 +1,6 @@
 package com.ruoyi.framework.util;
 
 import com.ruoyi.common.utils.ServletUtils;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,11 @@ public class TokenUtils {
     public static String getTokenFromHttpServletRequest(){
         HttpServletRequest request = ServletUtils.getRequest();
 
+        // 分别在 param、header、cookies中查询Token
+        return getTokenFromRequest(request);
+    }
+
+    public static String getTokenFromRequest(HttpServletRequest request) {
         // 分别在 param、header、cookies中查询Token
         String token = request.getParameter("token");
         if (token == null) {
@@ -30,6 +34,9 @@ public class TokenUtils {
                     }
                 }
             }
+        }
+        if (token == null){
+            token = (String) request.getAttribute("token");
         }
         return token;
     }

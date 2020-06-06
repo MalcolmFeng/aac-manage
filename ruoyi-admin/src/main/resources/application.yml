@@ -128,3 +128,9 @@ xss:
   excludes: /system/notice/*
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+#auth:
+#  server: http://localhost:7002
+#client:
+#  id: tencent
+#  secret: 123456
