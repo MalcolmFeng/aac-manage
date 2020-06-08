@@ -57,7 +57,7 @@ public class LogoutFilter extends AccessControlFilter
         response.addCookie(cookie2);
 
 
-        wrapper.sendRedirect("http://localhost");
+        wrapper.sendRedirect("http://localhost:7000");
 
         return false;
     }

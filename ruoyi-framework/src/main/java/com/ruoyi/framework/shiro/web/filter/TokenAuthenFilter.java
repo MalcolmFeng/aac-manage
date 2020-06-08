@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TokenAuthenFilter extends AccessControlFilter {
 
     private String authServer = "http://localhost:7002";
-    private String clientId = "manageServer";
+    private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
     @Override

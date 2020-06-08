@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,11 @@ public class SysDeptController extends BaseController
     @ResponseBody
     public List<SysDept> list(SysDept dept)
     {
-        List<SysDept> deptList = deptService.selectDeptList(dept);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        List<SysDept> deptList = deptService.selectDeptList(dept, clientId);
         return deptList;
     }
 
@@ -82,6 +88,11 @@ public class SysDeptController extends BaseController
         {
             return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        dept.setClientId(clientId);
         dept.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(deptService.insertDept(dept));
     }
@@ -179,7 +190,11 @@ public class SysDeptController extends BaseController
     @ResponseBody
     public List<Ztree> treeData()
     {
-        List<Ztree> ztrees = deptService.selectDeptTree(new SysDept());
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        List<Ztree> ztrees = deptService.selectDeptTree(new SysDept(),clientId);
         return ztrees;
     }
 

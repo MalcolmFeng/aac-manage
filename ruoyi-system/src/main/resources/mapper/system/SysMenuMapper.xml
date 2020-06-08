@@ -6,6 +6,8 @@
 
 	<resultMap type="SysMenu" id="SysMenuResult">
 		<id     property="menuId"         column="menu_id"        />
+		<result property="clientId"       column="client_id"      />
+		<result property="clientDomain"   column="client_domain"      />
 		<result property="menuName"       column="menu_name"      />
 		<result property="parentName"     column="parent_name"    />
 		<result property="parentId"       column="parent_id"      />
@@ -28,19 +30,30 @@
 		from sys_menu
     </sql>
 
+	<!-- 加载所有授权的菜单 -->
 	<select id="selectMenusByUserId" parameterType="Long" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.client_id, ifnull(client.client_domain,'') as client_domain, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
 			 LEFT JOIN sys_role ro on ur.role_id = ro.role_id
+			 left join oauth_client_details client on client.client_id = m.client_id
 		where ur.user_id = #{userId} and m.menu_type in ('M', 'C') and m.visible = 0  AND ro.status = 0
+		order by m.parent_id, m.order_num
+	</select>
+	<!-- 加载所有租户管理员创建的菜单 -->
+	<select id="selectMenusByClientSelf" resultMap="SysMenuResult">
+		select distinct m.menu_id, m.client_id, ifnull(client.client_domain,'') as client_domain, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		from sys_menu m
+			 left join oauth_client_details client on client.client_id = m.client_id
+		where m.client_id = #{clientId} and m.menu_type in ('M', 'C') and m.visible = 0
 		order by m.parent_id, m.order_num
 	</select>
 
 	<select id="selectMenuNormalAll" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.client_id, ifnull(client.client_domain,'') as client_domain, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
+			left join oauth_client_details client on client.client_id = m.client_id
 		where m.menu_type in ('M', 'C') and m.visible = 0
 		order by m.parent_id, m.order_num
 	</select>
@@ -50,13 +63,17 @@
 		order by parent_id, order_num
 	</select>
 
-	<select id="selectMenuAllByUserId" parameterType="Long" resultMap="SysMenuResult">
+	<select id="selectMenuAllByUserId" resultMap="SysMenuResult">
 		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
 			 LEFT JOIN sys_role ro on ur.role_id = ro.role_id
-		where ur.user_id = #{userId}
+		<where>
+			<if test="clientId != null and clientId != 'system'">
+				AND m.client_id = #{clientId}
+			</if>
+		</where>
 		order by m.parent_id, m.order_num
 	</select>
 
@@ -90,19 +107,23 @@
 		order by parent_id, order_num
 	</select>
 
-	<select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
+	<select id="selectMenuListByUserId" resultMap="SysMenuResult">
 		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
 		LEFT JOIN sys_role ro on ur.role_id = ro.role_id
-		where ur.user_id = #{params.userId}
-		<if test="menuName != null and menuName != ''">
-			AND m.menu_name like concat('%', #{menuName}, '%')
-		</if>
-		<if test="visible != null and visible != ''">
-			AND m.visible = #{visible}
-		</if>
+		<where>
+			<if test="menu.menuName != null and menu.menuName != ''">
+				AND m.menu_name like concat('%', #{menu.menuName}, '%')
+			</if>
+			<if test="menu.visible != null and menu.visible != ''">
+				AND m.visible = #{menu.visible}
+			</if>
+			<if test="clientId != null and clientId != 'system' ">
+				and m.client_id = #{clientId}
+			</if>
+		</where>
 		order by m.parent_id, m.order_num
 	</select>
 
@@ -110,7 +131,7 @@
 	    delete from sys_menu where menu_id = #{menuId} or parent_id = #{menuId}
 	</delete>
 
-	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
+	<select id="selectMenuById" resultMap="SysMenuResult">
 		SELECT t.menu_id, t.parent_id, t.menu_name, t.order_num, t.url, t.target, t.menu_type, t.visible, t.perms, t.icon, t.remark,
 			(SELECT menu_name FROM sys_menu WHERE menu_id = t.parent_id) parent_name
 		FROM sys_menu t
@@ -145,9 +166,10 @@
 		where menu_id = #{menuId}
 	</update>
 
-	<insert id="insertMenu" parameterType="SysMenu">
+	<insert id="insertMenu" parameterType="SysMenu" useGeneratedKeys="true" keyProperty="menuId">
 		insert into sys_menu(
 		<if test="menuId != null and menuId != 0">menu_id,</if>
+		<if test="clientId != null and clientId != ''">client_id,</if>
 		<if test="parentId != null and parentId != 0">parent_id,</if>
 		<if test="menuName != null and menuName != ''">menu_name,</if>
 		<if test="orderNum != null and orderNum != ''">order_num,</if>
@@ -162,6 +184,7 @@
 		create_time
 		)values(
 		<if test="menuId != null and menuId != 0">#{menuId},</if>
+		<if test="clientId != null and clientId != ''">#{clientId},</if>
 		<if test="parentId != null and parentId != 0">#{parentId},</if>
 		<if test="menuName != null and menuName != ''">#{menuName},</if>
 		<if test="orderNum != null and orderNum != ''">#{orderNum},</if>

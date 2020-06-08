@@ -17,6 +17,10 @@ public class SysDept extends BaseEntity
     /** 部门ID */
     private Long deptId;
 
+    private String clientId;
+
+    private String clientDomain;
+
     /** 父部门ID */
     private Long parentId;
 
@@ -181,5 +185,12 @@ public class SysDept extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .toString();
+    }
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

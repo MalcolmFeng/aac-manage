@@ -20,6 +20,8 @@ public class SysLogininfor extends BaseEntity
     @Excel(name = "序号", cellType = ColumnType.NUMERIC)
     private Long infoId;
 
+    private String clientId;
+
     /** 用户账号 */
     @Excel(name = "用户账号")
     private String loginName;
@@ -155,5 +157,13 @@ public class SysLogininfor extends BaseEntity
             .append("msg", getMsg())
             .append("loginTime", getLoginTime())
             .toString();
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

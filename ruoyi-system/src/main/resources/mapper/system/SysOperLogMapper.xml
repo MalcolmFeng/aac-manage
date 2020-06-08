@@ -29,13 +29,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
 	<insert id="insertOperlog" parameterType="SysOperLog">
-		insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
-        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, sysdate())
+		insert into sys_oper_log(title, business_type, method, request_method, operator_type, client_id, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{clientId}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, sysdate())
 	</insert>
 	
 	<select id="selectOperLogList" parameterType="SysOperLog" resultMap="SysOperLogResult">
 		<include refid="selectOperLogVo"/>
 		<where>
+			<if test="clientId != null">
+				AND client_id = #{clientId}
+			</if>
 			<if test="title != null and title != ''">
 				AND title like concat('%', #{title}, '%')
 			</if>

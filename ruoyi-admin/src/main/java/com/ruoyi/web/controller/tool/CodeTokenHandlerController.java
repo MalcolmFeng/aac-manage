@@ -1,5 +1,11 @@
 package com.ruoyi.web.controller.tool;
 
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.framework.manager.AsyncManager;
+import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.system.utils.JWTUtil;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +26,7 @@ import java.util.Map;
 public class CodeTokenHandlerController {
 
     private String authServer = "http://localhost:7002";
-    private String clientId = "manageServer";
+    private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
     @RequestMapping("/code")
@@ -41,6 +47,17 @@ public class CodeTokenHandlerController {
 
             Map map = (Map) new RestTemplate().exchange( authServer + "/oauth/token", HttpMethod.POST, new HttpEntity(formData1, headers1), Map.class, new Object[0]).getBody();
             String token = (String) map.get("access_token");
+
+            // 记录登录日志
+            try{
+
+                JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT(token);
+                String user_name = jwtPayload.getString("user_name");
+                String clients = jwtPayload.getString("clients");
+                AsyncManager.me().execute(AsyncFactory.recordLogininfor(user_name,clients,Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
+            }catch (Exception e){
+                System.out.println(e.toString());
+            }
 
             // 写入cookie
             Cookie cookie = new Cookie("token", token);

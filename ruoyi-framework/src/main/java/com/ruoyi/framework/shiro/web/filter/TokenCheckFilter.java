@@ -38,7 +38,7 @@ public class TokenCheckFilter extends AccessControlFilter {
     ISysUserService sysUserService;
 
     private String authServer = "http://localhost:7002";
-    private String clientId = "manageServer";
+    private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
     @Override

@@ -1,6 +1,8 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.system.domain.SysRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.UserConstants;
@@ -56,10 +58,14 @@ public class SysPostServiceImpl implements ISysPostService
      * @return 岗位列表
      */
     @Override
-    public List<SysPost> selectPostsByUserId(Long userId)
+    public List<SysPost> selectPostsByUserId(Long userId,String clientId)
     {
         List<SysPost> userPosts = postMapper.selectPostsByUserId(userId);
-        List<SysPost> posts = postMapper.selectPostAll();
+
+        SysPost postParam = new SysPost();
+        postParam.setClientId(clientId);
+        List<SysPost> posts = selectPostList(postParam);
+
         for (SysPost post : posts)
         {
             for (SysPost userRole : userPosts)

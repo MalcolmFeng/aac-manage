@@ -2,7 +2,9 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,10 @@ public class SysRoleController extends BaseController
     public TableDataInfo list(SysRole role)
     {
         startPage();
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        role.setClientId(clientId);
         List<SysRole> list = roleService.selectRoleList(role);
         return getDataTable(list);
     }
@@ -106,6 +112,11 @@ public class SysRoleController extends BaseController
         {
             return error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
         }
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        role.setClientId(clientId);
         role.setCreateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
         return toAjax(roleService.insertRole(role));
@@ -237,10 +248,15 @@ public class SysRoleController extends BaseController
      */
 //    @RequiresPermissions("system:role:edit")
     @GetMapping("/authUser/{roleId}")
-    public String authUser(@PathVariable("roleId") Long roleId, ModelMap mmap)
+    public ModelAndView authUser(@PathVariable("roleId") Long roleId, ModelMap mmap)
     {
         mmap.put("role", roleService.selectRoleById(roleId));
-        return prefix + "/authUser";
+
+        ModelAndView modelAndView = MVConstructor.MVConstruct();
+        modelAndView.setViewName(prefix+"/authUser");
+        return modelAndView;
+
+//        return prefix + "/authUser";
     }
 
     /**
@@ -297,6 +313,11 @@ public class SysRoleController extends BaseController
     public TableDataInfo unallocatedList(SysUser user)
     {
         startPage();
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        user.setClientId(clientId);
         List<SysUser> list = userService.selectUnallocatedList(user);
         return getDataTable(list);
     }

@@ -85,10 +85,14 @@ public class SysRoleServiceImpl implements ISysRoleService
      * @return 角色列表
      */
     @Override
-    public List<SysRole> selectRolesByUserId(Long userId)
+    public List<SysRole> selectRolesByUserId(Long userId,String clientId)
     {
         List<SysRole> userRoles = roleMapper.selectRolesByUserId(userId);
-        List<SysRole> roles = selectRoleAll();
+
+        SysRole roleParam = new SysRole();
+        roleParam.setClientId(clientId);
+        List<SysRole> roles = selectRoleList(roleParam);
+
         for (SysRole role : roles)
         {
             for (SysRole userRole : userRoles)

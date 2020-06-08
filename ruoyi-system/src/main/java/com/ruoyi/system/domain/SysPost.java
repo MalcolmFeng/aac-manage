@@ -20,6 +20,10 @@ public class SysPost extends BaseEntity
     @Excel(name = "岗位序号", cellType = ColumnType.NUMERIC)
     private Long postId;
 
+    private String clientId;
+
+    private String clientDomain;
+
     /** 岗位编码 */
     @Excel(name = "岗位编码")
     private String postCode;
@@ -118,5 +122,21 @@ public class SysPost extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .toString();
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientDomain() {
+        return clientDomain;
+    }
+
+    public void setClientDomain(String clientDomain) {
+        this.clientDomain = clientDomain;
     }
 }

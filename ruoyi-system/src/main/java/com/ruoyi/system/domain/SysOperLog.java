@@ -20,6 +20,8 @@ public class SysOperLog extends BaseEntity
     @Excel(name = "操作序号", cellType = ColumnType.NUMERIC)
     private Long operId;
 
+    private String clientId;
+
     /** 操作模块 */
     @Excel(name = "操作模块")
     private String title;
@@ -273,5 +275,13 @@ public class SysOperLog extends BaseEntity
             .append("errorMsg", getErrorMsg())
             .append("operTime", getOperTime())
             .toString();
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

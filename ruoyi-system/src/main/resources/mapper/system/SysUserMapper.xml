@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<resultMap type="SysUser" id="SysUserResult">
 		<id     property="userId"       column="user_id"      />
+		<result property="clientId"     column="client_id"    />
 		<result property="deptId"       column="dept_id"      />
 		<result property="loginName"    column="login_name"   />
 		<result property="userName"     column="user_name"    />
@@ -48,7 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectUserVo">
-        select  u.user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.sex, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
+        select  u.user_id, u.client_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.sex, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
        		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
        		    r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
 		from sys_user u
@@ -57,30 +58,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 left join sys_role r on r.role_id = ur.role_id
     </sql>
 	
-	<select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
+	<select id="selectUserList" resultMap="SysUserResult">
 		select u.user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
-		<if test="loginName != null and loginName != ''">
-			AND u.login_name like concat('%', #{loginName}, '%')
+		<if test="sysUser.userId != null and sysUser.userId != '' ">
+			and u.user_id != #{sysUser.userId}
 		</if>
-		<if test="status != null and status != ''">
-			AND u.status = #{status}
+		<if test="sysUser.clientId != null and sysUser.clientId != 'system' ">
+			and u.client_id = #{sysUser.clientId}
 		</if>
-		<if test="phonenumber != null and phonenumber != ''">
-			AND u.phonenumber like concat('%', #{phonenumber}, '%')
+		<if test="sysUser.loginName != null and sysUser.loginName != ''">
+			AND u.login_name like concat('%', #{sysUser.loginName}, '%')
 		</if>
-		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+		<if test="sysUser.status != null and sysUser.status != ''">
+			AND u.status = #{sysUser.status}
 		</if>
-		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+		<if test="sysUser.phonenumber != null and sysUser.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{sysUser.phonenumber}, '%')
 		</if>
-		<if test="deptId != null and deptId != 0">
-			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+		<if test="sysUser.params.beginTime != null and sysUser.params.beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{sysUser.params.beginTime},'%y%m%d')
+		</if>
+		<if test="sysUser.params.endTime != null and sysUser.params.endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{sysUser.params.endTime},'%y%m%d')
+		</if>
+		<if test="sysUser.deptId != null and sysUser.deptId != 0">
+			AND (u.dept_id = #{sysUser.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE FIND_IN_SET (#{sysUser.deptId},ancestors) ))
 		</if>
 		<!-- 数据范围过滤 -->
-		${params.dataScope}
+		${sysUser.params.dataScope}
 	</select>
 	
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
@@ -108,6 +115,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			 left join sys_role r on r.role_id = ur.role_id
 	    where u.del_flag = '0' and (r.role_id != #{roleId} or r.role_id IS NULL)
 	    and u.user_id not in (select u.user_id from sys_user u inner join sys_user_role ur on u.user_id = ur.user_id and ur.role_id = #{roleId})
+		<if test="clientId != null and clientId != 'system'">
+			AND u.client_id = #{clientId}
+		</if>
 	    <if test="loginName != null and loginName != ''">
 			AND u.login_name like concat('%', #{loginName}, '%')
 		</if>
@@ -187,6 +197,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
  		insert into sys_user(
  			<if test="userId != null and userId != 0">user_id,</if>
+			<if test="clientId != null and clientId != '' ">client_id,</if>
  			<if test="deptId != null and deptId != 0">dept_id,</if>
  			<if test="loginName != null and loginName != ''">login_name,</if>
  			<if test="userName != null and userName != ''">user_name,</if>
@@ -203,6 +214,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			create_time
  		)values(
  			<if test="userId != null and userId != ''">#{userId},</if>
+			<if test="clientId != null and clientId != ''">#{clientId},</if>
  			<if test="deptId != null and deptId != ''">#{deptId},</if>
  			<if test="loginName != null and loginName != ''">#{loginName},</if>
  			<if test="userName != null and userName != ''">#{userName},</if>

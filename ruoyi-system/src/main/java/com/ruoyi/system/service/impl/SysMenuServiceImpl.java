@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import java.awt.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +10,15 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.domain.SysRoleMenu;
+import com.ruoyi.system.utils.JWTUtil;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.constant.UserConstants;
@@ -55,6 +65,19 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menus = menuMapper.selectMenusByUserId(user.getUserId());
+            List<SysMenu>  selftMenu = menuMapper.selectMenusByClientSelf(user.getClientId());
+
+            List<Long> contained = new ArrayList<>();
+            for (SysMenu sysMenu : menus){
+                contained.add(sysMenu.getMenuId());
+            }
+            for (SysMenu temp : selftMenu){
+                if (contained.contains(temp.getMenuId())){
+                    continue;
+                }
+                menus.add(temp);
+            }
+
         }
         return getChildPerms(menus, 0);
     }
@@ -65,7 +88,7 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 所有菜单信息
      */
     @Override
-    public List<SysMenu> selectMenuList(SysMenu menu, Long userId)
+    public List<SysMenu> selectMenuList(SysMenu menu, Long userId, String clientId)
     {
         List<SysMenu> menuList = null;
         if (SysUser.isAdmin(userId))
@@ -75,7 +98,7 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menu.getParams().put("userId", userId);
-            menuList = menuMapper.selectMenuListByUserId(menu);
+            menuList = menuMapper.selectMenuListByUserId(menu, clientId);
         }
         return menuList;
     }
@@ -86,7 +109,7 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 所有菜单信息
      */
     @Override
-    public List<SysMenu> selectMenuAll(Long userId)
+    public List<SysMenu> selectMenuAll(Long userId,String clientId)
     {
         List<SysMenu> menuList = null;
         if (SysUser.isAdmin(userId))
@@ -95,7 +118,7 @@ public class SysMenuServiceImpl implements ISysMenuService
         }
         else
         {
-            menuList = menuMapper.selectMenuAllByUserId(userId);
+            menuList = menuMapper.selectMenuAllByUserId(userId,clientId);
         }
         return menuList;
     }
@@ -128,11 +151,11 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 菜单列表
      */
     @Override
-    public List<Ztree> roleMenuTreeData(SysRole role, Long userId)
+    public List<Ztree> roleMenuTreeData(SysRole role, Long userId,String clientId)
     {
         Long roleId = role.getRoleId();
         List<Ztree> ztrees = new ArrayList<Ztree>();
-        List<SysMenu> menuList = selectMenuAll(userId);
+        List<SysMenu> menuList = selectMenuAll(userId, clientId);
         if (StringUtils.isNotNull(roleId))
         {
             List<String> roleMenuList = menuMapper.selectMenuTree(roleId);
@@ -151,9 +174,9 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 菜单列表
      */
     @Override
-    public List<Ztree> menuTreeData(Long userId)
+    public List<Ztree> menuTreeData(Long userId, String clientId)
     {
-        List<SysMenu> menuList = selectMenuAll(userId);
+        List<SysMenu> menuList = selectMenuAll(userId,clientId);
         List<Ztree> ztrees = initZtree(menuList);
         return ztrees;
     }
@@ -167,7 +190,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public LinkedHashMap<String, String> selectPermsAll(Long userId)
     {
         LinkedHashMap<String, String> section = new LinkedHashMap<>();
-        List<SysMenu> permissions = selectMenuAll(userId);
+        List<SysMenu> permissions = selectMenuAll(userId,null);
         if (StringUtils.isNotEmpty(permissions))
         {
             for (SysMenu menu : permissions)
@@ -247,9 +270,9 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 菜单信息
      */
     @Override
-    public SysMenu selectMenuById(Long menuId)
+    public SysMenu selectMenuById(Long menuId, String clientId)
     {
-        return menuMapper.selectMenuById(menuId);
+        return menuMapper.selectMenuById(menuId,clientId);
     }
 
     /**
@@ -282,10 +305,34 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @param menu 菜单信息
      * @return 结果
      */
+
+    @Autowired
+    SqlSessionFactory sqlSessionFactory;
+
+    @Autowired
+    SysRoleMenuMapper sysRoleMenuMapper;
+
     @Override
     public int insertMenu(SysMenu menu)
     {
-        return menuMapper.insertMenu(menu);
+        System.out.println(menu.getMenuId());
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        Integer rows = sqlSession.getMapper(SysMenuMapper.class).insertMenu(menu);
+        // 获取自增的menuId
+        Long menuId = menu.getMenuId();
+
+        //  增加一条 role_menu 字段到表中 此逻辑不太对
+//        JSONObject payload = JWTUtil.getPayLoadJsonByJWT();
+//        JSONArray rolesId = JSON.parseArray(payload.getString("rolesSet"));
+//        List<SysRoleMenu> roleMenuList = new ArrayList<>();
+//        for (int i = 0; i < rolesId.size(); i++) {
+//            SysRoleMenu roleMenu = new SysRoleMenu();
+//            roleMenu.setMenuId(menuId);
+//            roleMenu.setRoleId(rolesId.getLong(i));
+//            roleMenuList.add(roleMenu);
+//        }
+//        sysRoleMenuMapper.batchRoleMenu(roleMenuList);
+        return rows;
     }
 
     /**

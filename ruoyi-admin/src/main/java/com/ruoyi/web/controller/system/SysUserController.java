@@ -3,11 +3,14 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
+import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
@@ -83,6 +86,11 @@ public class SysUserController extends BaseController
     public TableDataInfo list(SysUser user)
     {
         startPage();
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        user.setUserId(userId);
+        user.setClientId(clientId);
         List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
@@ -101,6 +109,11 @@ public class SysUserController extends BaseController
     @ResponseBody
     public AjaxResult export(SysUser user)
     {
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        user.setClientId(clientId);
         List<SysUser> list = userService.selectUserList(user);
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
         return util.exportExcel(list, "用户数据");
@@ -134,8 +147,18 @@ public class SysUserController extends BaseController
     @GetMapping("/add")
     public String add(ModelMap mmap)
     {
-        mmap.put("roles", roleService.selectRoleAll());
-        mmap.put("posts", postService.selectPostAll());
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        SysRole role = new SysRole();
+        role.setClientId(clientId);
+
+        SysPost post = new SysPost();
+        post.setClientId(clientId);
+
+        mmap.put("roles", roleService.selectRoleList(role));
+        mmap.put("posts", postService.selectPostList(post));
         return prefix + "/add";
     }
 
@@ -164,6 +187,12 @@ public class SysUserController extends BaseController
         user.setSalt(salt);
         user.setPassword(BcryptUtil.encode(user.getPassword(),salt));
         user.setCreateBy(ShiroUtils.getLoginName());
+
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        user.setClientId(clientId);
+
         return toAjax(userService.insertUser(user));
     }
 
@@ -173,9 +202,12 @@ public class SysUserController extends BaseController
     @GetMapping("/edit/{userId}")
     public String edit(@PathVariable("userId") Long userId, ModelMap mmap)
     {
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        String clientId = jwtPayload.getString("clients");
+
         mmap.put("user", userService.selectUserById(userId));
-        mmap.put("roles", roleService.selectRolesByUserId(userId));
-        mmap.put("posts", postService.selectPostsByUserId(userId));
+        mmap.put("roles", roleService.selectRolesByUserId(userId,clientId));
+        mmap.put("posts", postService.selectPostsByUserId(userId,clientId));
         return prefix + "/edit";
     }
 

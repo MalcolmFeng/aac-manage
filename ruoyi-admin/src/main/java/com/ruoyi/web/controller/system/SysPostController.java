@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,12 @@ public class SysPostController extends BaseController
     public TableDataInfo list(SysPost post)
     {
         startPage();
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        post.setClientId(clientId);
+
         List<SysPost> list = postService.selectPostList(post);
         return getDataTable(list);
     }

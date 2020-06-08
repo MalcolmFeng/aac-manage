@@ -24,6 +24,10 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户序号", cellType = ColumnType.NUMERIC, prompt = "用户编号")
     private Long userId;
 
+    private String clientId;
+
+    private String clientDomain;
+
     /** 部门ID */
     @Excel(name = "部门编号", type = Type.IMPORT)
     private Long deptId;
@@ -362,5 +366,21 @@ public class SysUser extends BaseEntity
             .append("dept", getDept())
 			.append("roles", getRoles())
             .toString();
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientDomain() {
+        return clientDomain;
+    }
+
+    public void setClientDomain(String clientDomain) {
+        this.clientDomain = clientDomain;
     }
 }

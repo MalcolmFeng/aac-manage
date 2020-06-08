@@ -1,7 +1,10 @@
 package com.ruoyi.web.controller.monitor;
 
 import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.framework.shiro.service.SysPasswordService;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,13 @@ public class SysLogininforController extends BaseController
     public TableDataInfo list(SysLogininfor logininfor)
     {
         startPage();
+
+//        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+//        Long userId = jwtPayload.getLong("userId");
+//        String clientId = jwtPayload.getString("clients");
+//
+//        logininfor.setClientId(clientId);
+
         List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
         return getDataTable(list);
     }

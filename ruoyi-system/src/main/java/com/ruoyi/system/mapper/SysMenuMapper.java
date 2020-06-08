@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import com.ruoyi.system.domain.SysMenu;
 
@@ -24,7 +26,7 @@ public interface SysMenuMapper
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuAllByUserId(Long userId);
+    public List<SysMenu> selectMenuAllByUserId(@Param("userId")Long userId,@Param("clientId")String clientId);
 
     /**
      * 查询系统正常显示菜单（不含按钮）
@@ -41,6 +43,8 @@ public interface SysMenuMapper
      */
     public List<SysMenu> selectMenusByUserId(Long userId);
 
+    public List<SysMenu> selectMenusByClientSelf(@Param("clientId") String clientId);
+
     /**
      * 根据用户ID查询权限
      * 
@@ -51,7 +55,7 @@ public interface SysMenuMapper
 
     /**
      * 根据角色ID查询菜单
-     * 
+     *
      * @param roleId 角色ID
      * @return 菜单列表
      */
@@ -71,7 +75,7 @@ public interface SysMenuMapper
      * @param menu 菜单信息
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuListByUserId(SysMenu menu);
+    public List<SysMenu> selectMenuListByUserId(@Param("menu") SysMenu menu, @Param("clientId") String clientId);
 
     /**
      * 删除菜单管理信息
@@ -87,7 +91,7 @@ public interface SysMenuMapper
      * @param menuId 菜单ID
      * @return 菜单信息
      */
-    public SysMenu selectMenuById(Long menuId);
+    public SysMenu selectMenuById(@Param("menuId") Long menuId,@Param("clientId") String clientId);
 
     /**
      * 查询菜单数量
@@ -103,6 +107,7 @@ public interface SysMenuMapper
      * @param menu 菜单信息
      * @return 结果
      */
+    @Options(useGeneratedKeys = true, keyProperty = "menuId", keyColumn = "menu_id")
     public int insertMenu(SysMenu menu);
 
     /**

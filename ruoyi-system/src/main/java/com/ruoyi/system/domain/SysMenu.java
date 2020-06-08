@@ -19,6 +19,10 @@ public class SysMenu extends BaseEntity
     /** 菜单ID */
     private Long menuId;
 
+    private String clientId;
+
+    private String clientDomain;
+
     /** 菜单名称 */
     private String menuName;
 
@@ -197,5 +201,20 @@ public class SysMenu extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .toString();
+    }
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getClientDomain() {
+        return clientDomain;
+    }
+
+    public void setClientDomain(String clientDomain) {
+        this.clientDomain = clientDomain;
     }
 }

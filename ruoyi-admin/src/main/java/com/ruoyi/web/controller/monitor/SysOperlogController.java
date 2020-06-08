@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.monitor;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,13 @@ public class SysOperlogController extends BaseController
     public TableDataInfo list(SysOperLog operLog)
     {
         startPage();
+
+//        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+//        Long userId = jwtPayload.getLong("userId");
+//        String clientId = jwtPayload.getString("clients");
+//
+//        operLog.setClientId(clientId);
+
         List<SysOperLog> list = operLogService.selectOperLogList(operLog);
         return getDataTable(list);
     }

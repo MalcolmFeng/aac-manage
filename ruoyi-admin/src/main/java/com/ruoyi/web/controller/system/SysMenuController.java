@@ -2,7 +2,9 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
+import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +60,10 @@ public class SysMenuController extends BaseController
     @ResponseBody
     public List<SysMenu> list(SysMenu menu)
     {
-        Long userId = GetUserFromJWT.getUserFromJWT().getUserId();
-        List<SysMenu> menuList = menuService.selectMenuList(menu, userId);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        List<SysMenu> menuList = menuService.selectMenuList(menu, userId, clientId);
         return menuList;
     }
 
@@ -93,7 +97,11 @@ public class SysMenuController extends BaseController
         SysMenu menu = null;
         if (0L != parentId)
         {
-            menu = menuService.selectMenuById(parentId);
+            JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+            Long userId = jwtPayload.getLong("userId");
+            String clientId = jwtPayload.getString("clients");
+
+            menu = menuService.selectMenuById(parentId,clientId);
         }
         else
         {
@@ -118,6 +126,11 @@ public class SysMenuController extends BaseController
         {
             return error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         }
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        menu.setClientId(clientId);
         menu.setCreateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
         return toAjax(menuService.insertMenu(menu));
@@ -129,7 +142,11 @@ public class SysMenuController extends BaseController
     @GetMapping("/edit/{menuId}")
     public String edit(@PathVariable("menuId") Long menuId, ModelMap mmap)
     {
-        mmap.put("menu", menuService.selectMenuById(menuId));
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        mmap.put("menu", menuService.selectMenuById(menuId, clientId));
         return prefix + "/edit";
     }
 
@@ -177,8 +194,10 @@ public class SysMenuController extends BaseController
     @ResponseBody
     public List<Ztree> roleMenuTreeData(SysRole role)
     {
-        Long userId = GetUserFromJWT.getUserFromJWT().getUserId();
-        List<Ztree> ztrees = menuService.roleMenuTreeData(role, userId);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        List<Ztree> ztrees = menuService.roleMenuTreeData(role, userId, clientId);
         return ztrees;
     }
 
@@ -189,8 +208,11 @@ public class SysMenuController extends BaseController
     @ResponseBody
     public List<Ztree> menuTreeData()
     {
-        Long userId = GetUserFromJWT.getUserFromJWT().getUserId();
-        List<Ztree> ztrees = menuService.menuTreeData(userId);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        List<Ztree> ztrees = menuService.menuTreeData(userId,clientId);
         return ztrees;
     }
 
@@ -200,7 +222,11 @@ public class SysMenuController extends BaseController
     @GetMapping("/selectMenuTree/{menuId}")
     public String selectMenuTree(@PathVariable("menuId") Long menuId, ModelMap mmap)
     {
-        mmap.put("menu", menuService.selectMenuById(menuId));
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+
+        mmap.put("menu", menuService.selectMenuById(menuId,clientId));
         return prefix + "/tree";
     }
 }

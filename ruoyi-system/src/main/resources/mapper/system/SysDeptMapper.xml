@@ -35,20 +35,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		order by d.parent_id, d.order_num
 	</select>
 	
-	<select id="selectDeptList" parameterType="SysDept" resultMap="SysDeptResult">
+	<select id="selectDeptList" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
         where d.del_flag = '0'
-        <if test="parentId != null and parentId != 0">
-			AND parent_id = #{parentId}
+		<if test="clientId != null and clientId != 'system'">
+			AND client_id = #{clientId}
 		</if>
-		<if test="deptName != null and deptName != ''">
-			AND dept_name like concat('%', #{deptName}, '%')
+        <if test="dept.parentId != null and dept.parentId != 0">
+			AND parent_id = #{dept.parentId}
 		</if>
-		<if test="status != null and status != ''">
-			AND status = #{status}
+		<if test="dept.deptName != null and dept.deptName != ''">
+			AND dept_name like concat('%', #{dept.deptName}, '%')
+		</if>
+		<if test="dept.status != null and dept.status != ''">
+			AND status = #{dept.status}
 		</if>
 		<!-- 数据范围过滤 -->
-		${params.dataScope}
+		${dept.params.dataScope}
 		order by d.parent_id, d.order_num
     </select>
 	
@@ -86,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<insert id="insertDept" parameterType="SysDept">
  		insert into sys_dept(
  			<if test="deptId != null and deptId != 0">dept_id,</if>
+			<if test="clientId != null and clientId != ''">client_id,</if>
  			<if test="parentId != null and parentId != 0">parent_id,</if>
  			<if test="deptName != null and deptName != ''">dept_name,</if>
  			<if test="ancestors != null and ancestors != ''">ancestors,</if>
@@ -98,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			create_time
  		)values(
  			<if test="deptId != null and deptId != 0">#{deptId},</if>
+			<if test="clientId != null and clientId != ''">#{clientId},</if>
  			<if test="parentId != null and parentId != 0">#{parentId},</if>
  			<if test="deptName != null and deptName != ''">#{deptName},</if>
  			<if test="ancestors != null and ancestors != ''">#{ancestors},</if>

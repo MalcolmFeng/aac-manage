@@ -1,6 +1,10 @@
 package com.ruoyi.framework.manager.factory;
 
 import java.util.TimerTask;
+
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.utils.JWTUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ruoyi.common.constant.Constants;
@@ -89,7 +93,7 @@ public class AsyncFactory
      * @param args 列表
      * @return 任务task
      */
-    public static TimerTask recordLogininfor(final String username, final String status, final String message, final Object... args)
+    public static TimerTask recordLogininfor(final String username, String clientId,final String status, final String message, final Object... args)
     {
         final UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
         final String ip = ShiroUtils.getIp();
@@ -113,12 +117,14 @@ public class AsyncFactory
                 String browser = userAgent.getBrowser().getName();
                 // 封装对象
                 SysLogininfor logininfor = new SysLogininfor();
+                logininfor.setClientId(clientId);
                 logininfor.setLoginName(username);
                 logininfor.setIpaddr(ip);
                 logininfor.setLoginLocation(address);
                 logininfor.setBrowser(browser);
                 logininfor.setOs(os);
                 logininfor.setMsg(message);
+
                 // 日志状态
                 if (StringUtils.equalsAny(status, Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER))
                 {

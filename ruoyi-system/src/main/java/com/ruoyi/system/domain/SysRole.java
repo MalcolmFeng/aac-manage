@@ -20,6 +20,10 @@ public class SysRole extends BaseEntity
     @Excel(name = "角色序号", cellType = ColumnType.NUMERIC)
     private Long roleId;
 
+    private String clientId;
+
+    private String clientDomain;
+
     /** 角色名称 */
     @Excel(name = "角色名称")
     private String roleName;
@@ -193,5 +197,12 @@ public class SysRole extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .toString();
+    }
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

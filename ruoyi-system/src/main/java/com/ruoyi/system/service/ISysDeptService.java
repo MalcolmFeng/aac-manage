@@ -18,7 +18,7 @@ public interface ISysDeptService
      * @param dept 部门信息
      * @return 部门信息集合
      */
-    public List<SysDept> selectDeptList(SysDept dept);
+    public List<SysDept> selectDeptList(SysDept dept, String clientId);
 
     /**
      * 查询部门管理树
@@ -26,7 +26,7 @@ public interface ISysDeptService
      * @param dept 部门信息
      * @return 所有部门信息
      */
-    public List<Ztree> selectDeptTree(SysDept dept);
+    public List<Ztree> selectDeptTree(SysDept dept,String clientId);
 
     /**
      * 查询部门管理树（排除下级）

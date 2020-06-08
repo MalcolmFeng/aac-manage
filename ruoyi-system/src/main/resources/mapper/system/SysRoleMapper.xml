@@ -36,6 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
 		<include refid="selectRoleContactVo"/>
 		where r.del_flag = '0'
+		<if test="clientId != null and clientId != 'system' ">
+			AND r.client_id = #{clientId}
+		</if>
 		<if test="roleName != null and roleName != ''">
 			AND r.role_name like concat('%', #{roleName}, '%')
 		</if>
@@ -107,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="roleId">
  		insert into sys_role(
  			<if test="roleId != null and roleId != 0">role_id,</if>
+			<if test="clientId != null and clientId != '' ">client_id,</if>
  			<if test="roleName != null and roleName != ''">role_name,</if>
  			<if test="roleKey != null and roleKey != ''">role_key,</if>
  			<if test="roleSort != null and roleSort != ''">role_sort,</if>
@@ -117,6 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			create_time
  		)values(
  			<if test="roleId != null and roleId != 0">#{roleId},</if>
+			<if test="clientId != null and clientId != ''">#{clientId},</if>
  			<if test="roleName != null and roleName != ''">#{roleName},</if>
  			<if test="roleKey != null and roleKey != ''">#{roleKey},</if>
  			<if test="roleSort != null and roleSort != ''">#{roleSort},</if>

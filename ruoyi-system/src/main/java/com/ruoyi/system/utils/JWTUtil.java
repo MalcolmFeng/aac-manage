@@ -6,9 +6,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ruoyi.common.utils.ServletUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 public class JWTUtil {
@@ -59,6 +62,15 @@ public class JWTUtil {
         String username = payload.getString("user_name");
         return username;
     }
+    public static String getUserNameByJWT(){
+        String jwt = getTokenFromHttpServletRequest();
+        String[] jwts = jwt.split("\\.");
+        String headerJson = StringUtils.newStringUtf8(Base64.decodeBase64(jwts[0]));
+        String payloadJson = StringUtils.newStringUtf8(Base64.decodeBase64(jwts[1]));
+        JSONObject payload = JSON.parseObject(payloadJson);
+        String username = payload.getString("user_name");
+        return username;
+    }
 
     public static JSONObject getPayLoadJsonByJWT(String jwt){
         String[] jwts = jwt.split("\\.");
@@ -66,6 +78,38 @@ public class JWTUtil {
         String payloadJson = StringUtils.newStringUtf8(Base64.decodeBase64(jwts[1]));
         JSONObject payload = JSON.parseObject(payloadJson);
         return payload;
+    }
+
+    public static JSONObject getPayLoadJsonByJWT(){
+        String jwt = getTokenFromHttpServletRequest();
+        String[] jwts = jwt.split("\\.");
+        String headerJson = org.apache.commons.codec.binary.StringUtils.newStringUtf8(org.apache.commons.codec.binary.Base64.decodeBase64(jwts[0]));
+        String payloadJson = org.apache.commons.codec.binary.StringUtils.newStringUtf8(org.apache.commons.codec.binary.Base64.decodeBase64(jwts[1]));
+        JSONObject payload = JSON.parseObject(payloadJson);
+        return payload;
+    }
+
+    public static String getTokenFromHttpServletRequest(){
+        HttpServletRequest request = ServletUtils.getRequest();
+
+        // 分别在 param、header、cookies中查询Token
+        String token = request.getParameter("token");
+        if (token == null) {
+            token = request.getHeader("token");
+        }
+        if (token == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null){
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("token")) {
+                        // 在cookies中找到Token之后，结束遍历
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        return token;
     }
 
     /**

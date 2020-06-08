@@ -3,7 +3,11 @@ package com.ruoyi.framework.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
+import com.ruoyi.system.utils.JWTUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
@@ -51,13 +55,9 @@ public class ShiroUtils
 
     public static SysUser getSysUser()
     {
-        SysUser user = null;
-        Object obj = getSubject().getPrincipal();
-        if (StringUtils.isNotNull(obj))
-        {
-            user = new SysUser();
-            BeanUtils.copyBeanProp(user, obj);
-        }
+        String loginName = JWTUtil.getUserNameByJWT();
+        ISysUserService sysUserService = SpringUtils.getBean(ISysUserService.class);
+        SysUser user = sysUserService.selectUserByLoginName(loginName);
         return user;
     }
 

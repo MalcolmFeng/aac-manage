@@ -25,6 +25,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectPostList" parameterType="SysPost" resultMap="SysPostResult">
 	    <include refid="selectPostVo"/>
 		<where>
+			<if test="clientId != null and clientId != 'system' ">
+				AND client_id = #{clientId}
+			</if>
 			<if test="postCode != null and postCode != ''">
 				AND post_code like concat('%', #{postCode}, '%')
 			</if>
