@@ -80,6 +80,13 @@ public class SysUserController extends BaseController
 //        return prefix + "/user";
     }
 
+    @RequestMapping("/getUserInfo")
+    @ResponseBody
+    public SysUser getUserInfo() {
+        SysUser user = GetUserFromJWT.getUserFromJWT();
+        return user;
+    }
+
 //    @RequiresPermissions("system:user:list")
     @PostMapping("/list")
     @ResponseBody
@@ -112,7 +119,7 @@ public class SysUserController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
-
+        user.setUserId(userId);
         user.setClientId(clientId);
         List<SysUser> list = userService.selectUserList(user);
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
@@ -157,7 +164,7 @@ public class SysUserController extends BaseController
         SysPost post = new SysPost();
         post.setClientId(clientId);
 
-        mmap.put("roles", roleService.selectRoleList(role));
+        mmap.put("roles", roleService.selectRoleList(userId,role));
         mmap.put("posts", postService.selectPostList(post));
         return prefix + "/add";
     }
@@ -192,6 +199,7 @@ public class SysUserController extends BaseController
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
         user.setClientId(clientId);
+        user.setParentUserId(userId);
 
         return toAjax(userService.insertUser(user));
     }

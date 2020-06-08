@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.ruoyi.system.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +16,6 @@ import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.BusinessException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.system.domain.SysRole;
-import com.ruoyi.system.domain.SysRoleDept;
-import com.ruoyi.system.domain.SysRoleMenu;
-import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.mapper.SysRoleDeptMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
@@ -52,9 +50,18 @@ public class SysRoleServiceImpl implements ISysRoleService
      */
     @Override
     @DataScope(deptAlias = "d")
-    public List<SysRole> selectRoleList(SysRole role)
+    public List<SysRole> selectRoleList(Long userId,SysRole role)
     {
-        return roleMapper.selectRoleList(role);
+        List<SysRole> roleList = null;
+        if (SysUser.isAdmin(userId))
+        {
+            roleList = roleMapper.selectRoleList(new SysRole());
+        }
+        else
+        {
+            roleList = roleMapper.selectRoleList(role);
+        }
+        return roleList;
     }
 
     /**
@@ -91,7 +98,7 @@ public class SysRoleServiceImpl implements ISysRoleService
 
         SysRole roleParam = new SysRole();
         roleParam.setClientId(clientId);
-        List<SysRole> roles = selectRoleList(roleParam);
+        List<SysRole> roles = selectRoleList(userId,roleParam);
 
         for (SysRole role : roles)
         {
@@ -115,7 +122,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public List<SysRole> selectRoleAll()
     {
-        return SpringUtils.getAopProxy(this).selectRoleList(new SysRole());
+        return SpringUtils.getAopProxy(this).selectRoleList(null,new SysRole());
     }
 
     /**

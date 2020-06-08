@@ -20,6 +20,8 @@ public class SysRole extends BaseEntity
     @Excel(name = "角色序号", cellType = ColumnType.NUMERIC)
     private Long roleId;
 
+    private Long parentUserId;
+
     private String clientId;
 
     private String clientDomain;
@@ -204,5 +206,21 @@ public class SysRole extends BaseEntity
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public Long getParentUserId() {
+        return parentUserId;
+    }
+
+    public void setParentUserId(Long parentUserId) {
+        this.parentUserId = parentUserId;
+    }
+
+    public String getClientDomain() {
+        return clientDomain;
+    }
+
+    public void setClientDomain(String clientDomain) {
+        this.clientDomain = clientDomain;
     }
 }

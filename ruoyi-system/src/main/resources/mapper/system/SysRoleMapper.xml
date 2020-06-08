@@ -36,6 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
 		<include refid="selectRoleContactVo"/>
 		where r.del_flag = '0'
+		<if test="parentUserId != null and parentUserId != 0 ">
+			AND r.parent_user_id = #{parentUserId}
+		</if>
 		<if test="clientId != null and clientId != 'system' ">
 			AND r.client_id = #{clientId}
 		</if>
@@ -110,6 +113,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="roleId">
  		insert into sys_role(
  			<if test="roleId != null and roleId != 0">role_id,</if>
+			<if test="parentUserId != null and parentUserId != 0">parent_user_id,</if>
 			<if test="clientId != null and clientId != '' ">client_id,</if>
  			<if test="roleName != null and roleName != ''">role_name,</if>
  			<if test="roleKey != null and roleKey != ''">role_key,</if>
@@ -121,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			create_time
  		)values(
  			<if test="roleId != null and roleId != 0">#{roleId},</if>
+			<if test="parentUserId != null and parentUserId != 0">#{parentUserId},</if>
 			<if test="clientId != null and clientId != ''">#{clientId},</if>
  			<if test="roleName != null and roleName != ''">#{roleName},</if>
  			<if test="roleKey != null and roleKey != ''">#{roleKey},</if>

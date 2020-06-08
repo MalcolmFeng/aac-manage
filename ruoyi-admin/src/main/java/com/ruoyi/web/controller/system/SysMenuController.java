@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
@@ -55,6 +56,14 @@ public class SysMenuController extends BaseController
 //        return prefix + "/menu";
     }
 
+    @RequestMapping("/getUserMenu")
+    @ResponseBody
+    public List<SysMenu> getUserMenu(){
+        SysUser user = GetUserFromJWT.getUserFromJWT();
+        List<SysMenu> menus = menuService.selectMenusByUser(user);
+        return menus;
+    }
+
 //    @RequiresPermissions("system:menu:list")
     @PostMapping("/list")
     @ResponseBody
@@ -63,6 +72,8 @@ public class SysMenuController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        // 只查询此用户创建的菜单
+        menu.setCreateBy(GetUserFromJWT.getUserFromJWT().getLoginName());
         List<SysMenu> menuList = menuService.selectMenuList(menu, userId, clientId);
         return menuList;
     }

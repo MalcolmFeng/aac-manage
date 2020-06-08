@@ -43,7 +43,7 @@ public interface SysMenuMapper
      */
     public List<SysMenu> selectMenusByUserId(Long userId);
 
-    public List<SysMenu> selectMenusByClientSelf(@Param("clientId") String clientId);
+    public List<SysMenu> selectMenusByClientSelf(@Param("loginName") String loginName);
 
     /**
      * 根据用户ID查询权限
@@ -126,4 +126,6 @@ public interface SysMenuMapper
      * @return 结果
      */
     public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
+
+    List<SysMenu> selectMenuAllSystem();
 }

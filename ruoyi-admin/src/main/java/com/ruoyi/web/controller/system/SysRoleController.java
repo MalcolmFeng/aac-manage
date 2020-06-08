@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
@@ -70,8 +72,10 @@ public class SysRoleController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        role.setParentUserId(userId);
         role.setClientId(clientId);
-        List<SysRole> list = roleService.selectRoleList(role);
+
+        List<SysRole> list = roleService.selectRoleList(userId,role);
         return getDataTable(list);
     }
 
@@ -81,7 +85,13 @@ public class SysRoleController extends BaseController
     @ResponseBody
     public AjaxResult export(SysRole role)
     {
-        List<SysRole> list = roleService.selectRoleList(role);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        role.setParentUserId(userId);
+        role.setClientId(clientId);
+
+        List<SysRole> list = roleService.selectRoleList(userId,role);
         ExcelUtil<SysRole> util = new ExcelUtil<SysRole>(SysRole.class);
         return util.exportExcel(list, "角色数据");
     }
@@ -116,6 +126,7 @@ public class SysRoleController extends BaseController
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
 
+        role.setParentUserId(userId);
         role.setClientId(clientId);
         role.setCreateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();

@@ -65,8 +65,9 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menus = menuMapper.selectMenusByUserId(user.getUserId());
-            List<SysMenu>  selftMenu = menuMapper.selectMenusByClientSelf(user.getClientId());
 
+            // 加载所有自己创建的菜单，在左侧列表进行显示
+            List<SysMenu> selftMenu = menuMapper.selectMenusByClientSelf(user.getLoginName());
             List<Long> contained = new ArrayList<>();
             for (SysMenu sysMenu : menus){
                 contained.add(sysMenu.getMenuId());
@@ -77,7 +78,6 @@ public class SysMenuServiceImpl implements ISysMenuService
                 }
                 menus.add(temp);
             }
-
         }
         return getChildPerms(menus, 0);
     }
@@ -119,6 +119,11 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menuList = menuMapper.selectMenuAllByUserId(userId,clientId);
+            // 查询所有系统菜单，并写入带选择的 menuList
+            List<SysMenu> systemMenu = menuMapper.selectMenuAllSystem();
+            for (SysMenu temp : systemMenu){
+                menuList.add(temp);
+            }
         }
         return menuList;
     }
