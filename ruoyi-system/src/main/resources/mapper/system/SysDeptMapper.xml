@@ -38,10 +38,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectDeptList" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
         where d.del_flag = '0'
-		<if test="clientId != null and clientId != 'system'">
-			AND client_id = #{clientId}
+--         不是超级管理员
+		<if test=" roleId != 1 ">
+-- 			不是租户管理员，只查询本人创建的部门
+			<if test="roleId != 106">
+				AND create_by = #{loginName}
+			</if>
+-- 			是租户管理员，查询此租户所有的部门
+			<if test="clientId != null and clientId != 'system'">
+				AND client_id = #{clientId}
+			</if>
 		</if>
-        <if test="dept.parentId != null and dept.parentId != 0">
+		<if test="dept.parentId != null and dept.parentId != 0">
 			AND parent_id = #{dept.parentId}
 		</if>
 		<if test="dept.deptName != null and dept.deptName != ''">

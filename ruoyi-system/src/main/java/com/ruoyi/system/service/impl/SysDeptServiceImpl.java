@@ -36,9 +36,9 @@ public class SysDeptServiceImpl implements ISysDeptService
      */
     @Override
     @DataScope(deptAlias = "d")
-    public List<SysDept> selectDeptList(SysDept dept, String clientId)
+    public List<SysDept> selectDeptList(SysDept dept, String clientId, Long roleId, String loginName)
     {
-        return deptMapper.selectDeptList(dept, clientId);
+        return deptMapper.selectDeptList(dept, clientId, roleId, loginName);
     }
 
     /**
@@ -51,7 +51,8 @@ public class SysDeptServiceImpl implements ISysDeptService
     @DataScope(deptAlias = "d")
     public List<Ztree> selectDeptTree(SysDept dept,String clientId)
     {
-        List<SysDept> deptList = deptMapper.selectDeptList(dept,clientId);
+        // roleId设置为 租户管理员
+        List<SysDept> deptList = deptMapper.selectDeptList(dept, clientId, (long) 106,null);
         List<Ztree> ztrees = initZtree(deptList);
         return ztrees;
     }
@@ -66,7 +67,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     public List<Ztree> selectDeptTreeExcludeChild(SysDept dept)
     {
         Long deptId = dept.getDeptId();
-        List<SysDept> deptList = deptMapper.selectDeptList(dept,null);
+        List<SysDept> deptList = deptMapper.selectDeptList(dept,null,null,null);
         Iterator<SysDept> it = deptList.iterator();
         while (it.hasNext())
         {
@@ -92,7 +93,7 @@ public class SysDeptServiceImpl implements ISysDeptService
     {
         Long roleId = role.getRoleId();
         List<Ztree> ztrees = new ArrayList<Ztree>();
-        List<SysDept> deptList = selectDeptList(new SysDept(),null);
+        List<SysDept> deptList = selectDeptList(new SysDept(),null,null,null);
         if (StringUtils.isNotNull(roleId))
         {
             List<String> roleDeptList = deptMapper.selectRoleDeptTree(roleId);

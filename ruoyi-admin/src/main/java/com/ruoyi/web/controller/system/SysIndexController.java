@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.system;
 import java.io.IOException;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.service.ISysUserService;
@@ -42,6 +44,12 @@ public class SysIndexController extends BaseController
     @GetMapping("/index")
     public String index(ModelMap mmap) throws IOException {
         SysUser user = GetUserFromJWT.getUserFromJWT();
+
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
+        user.setRoleId(roleId);
 
         // 根据用户id取出菜单
         List<SysMenu> menus = menuService.selectMenusByUser(user);

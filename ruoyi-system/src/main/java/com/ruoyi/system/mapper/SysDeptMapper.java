@@ -33,7 +33,10 @@ public interface SysDeptMapper
      * @param dept 部门信息
      * @return 部门信息集合
      */
-    public List<SysDept> selectDeptList(@Param("dept") SysDept dept,@Param("clientId") String clientId);
+    public List<SysDept> selectDeptList(@Param("dept") SysDept dept,
+                                        @Param("clientId") String clientId,
+                                        @Param("roleId") Long roleId,
+                                        @Param("loginName") String loginName);
 
     /**
      * 删除部门管理信息

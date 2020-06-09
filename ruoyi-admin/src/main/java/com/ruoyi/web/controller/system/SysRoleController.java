@@ -72,8 +72,12 @@ public class SysRoleController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
         role.setParentUserId(userId);
         role.setClientId(clientId);
+        role.setRoleId(roleId);
 
         List<SysRole> list = roleService.selectRoleList(userId,role);
         return getDataTable(list);
@@ -190,7 +194,7 @@ public class SysRoleController extends BaseController
         role.setUpdateBy(ShiroUtils.getLoginName());
         if (roleService.authDataScope(role) > 0)
         {
-            ShiroUtils.setSysUser(userService.selectUserById(GetUserFromJWT.getUserFromJWT().getUserId()));
+            ShiroUtils.setSysUser(userService.selectUserById(JWTUtil.getPayLoadJsonByJWT().getLong("userId")));
             return success();
         }
         return error();

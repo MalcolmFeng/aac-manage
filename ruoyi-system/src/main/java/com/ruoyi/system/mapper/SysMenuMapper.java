@@ -43,7 +43,7 @@ public interface SysMenuMapper
      */
     public List<SysMenu> selectMenusByUserId(Long userId);
 
-    public List<SysMenu> selectMenusByClientSelf(@Param("loginName") String loginName);
+    public List<SysMenu> selectMenusByClientSelf(@Param("clientId") String clientId, @Param("roleId") Long roleId, @Param("loginName") String loginName);
 
     /**
      * 根据用户ID查询权限
@@ -75,7 +75,7 @@ public interface SysMenuMapper
      * @param menu 菜单信息
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuListByUserId(@Param("menu") SysMenu menu, @Param("clientId") String clientId);
+    public List<SysMenu> selectMenuListByUserId(@Param("menu") SysMenu menu, @Param("clientId") String clientId, @Param("roleId") Long roleId);
 
     /**
      * 删除菜单管理信息

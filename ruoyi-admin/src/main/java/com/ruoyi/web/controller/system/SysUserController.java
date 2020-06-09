@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 import java.util.Set;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
@@ -96,8 +98,13 @@ public class SysUserController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
         user.setUserId(userId);
         user.setClientId(clientId);
+        user.setRoleId(roleId);
+
         List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
@@ -134,8 +141,8 @@ public class SysUserController extends BaseController
     {
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
         List<SysUser> userList = util.importExcel(file.getInputStream());
-        String operName = GetUserFromJWT.getUserFromJWT().getLoginName();
-        String message = userService.importUser(userList, updateSupport, operName);
+        String loginName = JWTUtil.getPayLoadJsonByJWT().getString("loginName");
+        String message = userService.importUser(userList, updateSupport, loginName);
         return AjaxResult.success(message);
     }
 
@@ -165,7 +172,7 @@ public class SysUserController extends BaseController
         post.setClientId(clientId);
 
         mmap.put("roles", roleService.selectRoleList(userId,role));
-        mmap.put("posts", postService.selectPostList(post));
+        mmap.put("posts", postService.selectPostList(post,null , (long) 106 ));
         return prefix + "/add";
     }
 
@@ -262,7 +269,7 @@ public class SysUserController extends BaseController
         user.setPassword(BcryptUtil.encode(user.getPassword(),salt));
         if (userService.resetUserPwd(user) > 0)
         {
-            if (GetUserFromJWT.getUserFromJWT().getUserId().longValue() == user.getUserId().longValue())
+            if (JWTUtil.getPayLoadJsonByJWT().getLong("userId") == user.getUserId().longValue())
             {
                 ShiroUtils.setSysUser(userService.selectUserById(user.getUserId()));
             }

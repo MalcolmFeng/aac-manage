@@ -30,7 +30,7 @@ public interface ISysMenuService
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuList(SysMenu menu, Long userId, String clientId);
+    public List<SysMenu> selectMenuList(SysMenu menu, Long userId, String clientId, Long roleId);
 
     /**
      * 查询菜单集合
@@ -38,7 +38,7 @@ public interface ISysMenuService
      * @param userId 用户ID
      * @return 所有菜单信息
      */
-    public List<SysMenu> selectMenuAll(Long userId,String clientId);
+    public List<SysMenu> selectMenuAll(Long userId,String clientId,boolean flag);
 
     /**
      * 根据用户ID查询权限
@@ -63,7 +63,7 @@ public interface ISysMenuService
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<Ztree> menuTreeData(Long userId,String clientId);
+    public List<Ztree> menuTreeData(Long userId,String clientId,boolean flag);
 
     /**
      * 查询系统所有权限

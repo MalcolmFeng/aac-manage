@@ -42,10 +42,10 @@ public class SysMenuServiceImpl implements ISysMenuService
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
     @Autowired
-    private SysMenuMapper menuMapper;
+    SysMenuMapper menuMapper;
 
     @Autowired
-    private SysRoleMenuMapper roleMenuMapper;
+    SysRoleMenuMapper roleMenuMapper;
 
     /**
      * 根据用户查询菜单
@@ -67,7 +67,7 @@ public class SysMenuServiceImpl implements ISysMenuService
             menus = menuMapper.selectMenusByUserId(user.getUserId());
 
             // 加载所有自己创建的菜单，在左侧列表进行显示
-            List<SysMenu> selftMenu = menuMapper.selectMenusByClientSelf(user.getLoginName());
+            List<SysMenu> selftMenu = menuMapper.selectMenusByClientSelf(user.getClientId(),user.getRoleId(),user.getLoginName());
             List<Long> contained = new ArrayList<>();
             for (SysMenu sysMenu : menus){
                 contained.add(sysMenu.getMenuId());
@@ -88,7 +88,7 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 所有菜单信息
      */
     @Override
-    public List<SysMenu> selectMenuList(SysMenu menu, Long userId, String clientId)
+    public List<SysMenu> selectMenuList(SysMenu menu, Long userId, String clientId, Long roleId)
     {
         List<SysMenu> menuList = null;
         if (SysUser.isAdmin(userId))
@@ -98,7 +98,7 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menu.getParams().put("userId", userId);
-            menuList = menuMapper.selectMenuListByUserId(menu, clientId);
+            menuList = menuMapper.selectMenuListByUserId(menu, clientId, roleId);
         }
         return menuList;
     }
@@ -109,7 +109,7 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 所有菜单信息
      */
     @Override
-    public List<SysMenu> selectMenuAll(Long userId,String clientId)
+    public List<SysMenu> selectMenuAll(Long userId,String clientId,boolean flag)
     {
         List<SysMenu> menuList = null;
         if (SysUser.isAdmin(userId))
@@ -119,11 +119,15 @@ public class SysMenuServiceImpl implements ISysMenuService
         else
         {
             menuList = menuMapper.selectMenuAllByUserId(userId,clientId);
+            // 只要能添加角色，就有分配系统管理权限的能力。
             // 查询所有系统菜单，并写入带选择的 menuList
-            List<SysMenu> systemMenu = menuMapper.selectMenuAllSystem();
-            for (SysMenu temp : systemMenu){
-                menuList.add(temp);
+            if (flag){
+                List<SysMenu> systemMenu = menuMapper.selectMenuAllSystem();
+                for (SysMenu temp : systemMenu){
+                    menuList.add(temp);
+                }
             }
+
         }
         return menuList;
     }
@@ -160,7 +164,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     {
         Long roleId = role.getRoleId();
         List<Ztree> ztrees = new ArrayList<Ztree>();
-        List<SysMenu> menuList = selectMenuAll(userId, clientId);
+        List<SysMenu> menuList = selectMenuAll(userId, clientId,true);
         if (StringUtils.isNotNull(roleId))
         {
             List<String> roleMenuList = menuMapper.selectMenuTree(roleId);
@@ -179,9 +183,9 @@ public class SysMenuServiceImpl implements ISysMenuService
      * @return 菜单列表
      */
     @Override
-    public List<Ztree> menuTreeData(Long userId, String clientId)
+    public List<Ztree> menuTreeData(Long userId, String clientId,boolean flag)
     {
-        List<SysMenu> menuList = selectMenuAll(userId,clientId);
+        List<SysMenu> menuList = selectMenuAll(userId,clientId,flag);
         List<Ztree> ztrees = initZtree(menuList);
         return ztrees;
     }
@@ -195,7 +199,7 @@ public class SysMenuServiceImpl implements ISysMenuService
     public LinkedHashMap<String, String> selectPermsAll(Long userId)
     {
         LinkedHashMap<String, String> section = new LinkedHashMap<>();
-        List<SysMenu> permissions = selectMenuAll(userId,null);
+        List<SysMenu> permissions = selectMenuAll(userId,null,true);
         if (StringUtils.isNotEmpty(permissions))
         {
             for (SysMenu menu : permissions)

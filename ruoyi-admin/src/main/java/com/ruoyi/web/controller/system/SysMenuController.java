@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
@@ -72,9 +74,14 @@ public class SysMenuController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
         // 只查询此用户创建的菜单
-        menu.setCreateBy(GetUserFromJWT.getUserFromJWT().getLoginName());
-        List<SysMenu> menuList = menuService.selectMenuList(menu, userId, clientId);
+        menu.setCreateBy(loginName);
+
+        List<SysMenu> menuList = menuService.selectMenuList(menu, userId, clientId,roleId);
         return menuList;
     }
 
@@ -223,7 +230,8 @@ public class SysMenuController extends BaseController
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
 
-        List<Ztree> ztrees = menuService.menuTreeData(userId,clientId);
+        // 最后一个参数，false为不加载系统菜单
+        List<Ztree> ztrees = menuService.menuTreeData(userId,clientId,false);
         return ztrees;
     }
 

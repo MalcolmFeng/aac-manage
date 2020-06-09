@@ -46,7 +46,15 @@
 		select distinct m.menu_id, m.client_id, ifnull(client.client_domain,'') as client_domain, m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join oauth_client_details client on client.client_id = m.client_id
-		where m.create_by = #{loginName} and m.menu_type in ('M', 'C') and m.visible = 0
+		where m.menu_type in ('M', 'C') and m.visible = 0
+-- 		如果是租户管理员，查询所有client_id为此租户的菜单
+		<if test=" roleId == 106 ">
+			and m.client_id = #{clientId}
+		</if>
+-- 		如果是普通用户，查询自己创建的
+		<if test=" roleId != 106 ">
+			and m.create_by = #{loginName}
+		</if>
 		order by m.parent_id, m.order_num
 	</select>
 
@@ -133,7 +141,7 @@
 			<if test="clientId != null and clientId != 'system' ">
 				and m.client_id = #{clientId}
 			</if>
-			<if test="menu.createBy != null and menu.createBy != 'system' ">
+			<if test="menu.createBy != null and menu.createBy != 'system' and roleId != 106">
 				and m.create_by = #{menu.createBy}
 			</if>
 		</where>

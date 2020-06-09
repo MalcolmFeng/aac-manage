@@ -23,10 +23,10 @@ import com.ruoyi.system.service.ISysPostService;
 public class SysPostServiceImpl implements ISysPostService
 {
     @Autowired
-    private SysPostMapper postMapper;
+    SysPostMapper postMapper;
 
     @Autowired
-    private SysUserPostMapper userPostMapper;
+    SysUserPostMapper userPostMapper;
 
     /**
      * 查询岗位信息集合
@@ -35,9 +35,9 @@ public class SysPostServiceImpl implements ISysPostService
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPost> selectPostList(SysPost post)
+    public List<SysPost> selectPostList(SysPost post,String loginName,Long roleId)
     {
-        return postMapper.selectPostList(post);
+        return postMapper.selectPostList(post,loginName,roleId);
     }
 
     /**
@@ -64,7 +64,7 @@ public class SysPostServiceImpl implements ISysPostService
 
         SysPost postParam = new SysPost();
         postParam.setClientId(clientId);
-        List<SysPost> posts = selectPostList(postParam);
+        List<SysPost> posts = selectPostList(postParam,null,null);
 
         for (SysPost post : posts)
         {

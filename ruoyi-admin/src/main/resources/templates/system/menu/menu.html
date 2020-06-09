@@ -81,6 +81,12 @@
 		                }
 		            }
 		        },
+				{
+					field: 'createBy',
+					title: '创建者',
+					width: '15%',
+					align: "left"
+				},
 		        {
 		            field: 'orderNum',
 		            title: '排序',
@@ -125,15 +131,15 @@
 		            	return $.table.selectDictLabel(datas, row.visible);
 		            }
 		        },
-		        {
-		            field: 'perms',
-		            title: '权限标识',
-		            width: '15%',
-		            align: "left",
-		            formatter: function(value, row, index) {
-                    	return $.table.tooltip(value);
-                    }
-		        },
+		        // {
+		        //     field: 'perms',
+		        //     title: '权限标识',
+		        //     width: '15%',
+		        //     align: "left",
+		        //     formatter: function(value, row, index) {
+                //     	return $.table.tooltip(value);
+                //     }
+		        // },
 		        {
 		            title: '操作',
 		            width: '20%',

@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<id     property="userId"       column="user_id"      />
 		<result property="clientId"     column="client_id"    />
 		<result property="parentUserId" column="parent_user_id"    />
+		<result property="parentLoginName" column="parent_login_name"    />
 		<result property="deptId"       column="dept_id"      />
 		<result property="loginName"    column="login_name"   />
 		<result property="userName"     column="user_name"    />
@@ -60,11 +61,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 	
 	<select id="selectUserList" resultMap="SysUserResult">
-		select u.user_id, u.client_id, u.parent_user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		select u.user_id, u.client_id, u.parent_user_id,
+				(select t.login_name from sys_user t where t.user_id = u.parent_user_id) as parent_login_name,
+				u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader
+		from sys_user u
 		left join sys_dept d on u.dept_id = d.dept_id
 		where u.del_flag = '0'
-		<if test="sysUser.userId != null and sysUser.userId != 1 ">
+-- 		如果不是超级管理员，不是租户管理员，才执行查询父用户的条件
+		<if test="sysUser.userId != null and sysUser.userId != 1 and sysUser.roleId != 106 ">
 			and u.parent_user_id = #{sysUser.userId}
+		</if>
+-- 		不查询本用户
+		<if test="sysUser.userId != null and sysUser.userId != '' ">
+			and u.user_id != #{sysUser.userId}
 		</if>
 		<if test="sysUser.clientId != null and sysUser.clientId != 'system' ">
 			and u.client_id = #{sysUser.clientId}
@@ -89,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 		<!-- 数据范围过滤 -->
 		${sysUser.params.dataScope}
+		order by u.parent_user_id
 	</select>
 	
 	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">

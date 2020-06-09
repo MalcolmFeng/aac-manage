@@ -22,20 +22,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_post
     </sql>
 	
-	<select id="selectPostList" parameterType="SysPost" resultMap="SysPostResult">
+	<select id="selectPostList" resultMap="SysPostResult">
 	    <include refid="selectPostVo"/>
 		<where>
-			<if test="clientId != null and clientId != 'system' ">
-				AND client_id = #{clientId}
+			<if test=" roleId != 1">
+				<if test=" roleId != 106">
+-- 					不是超级管理员，不是租户管理员，只能查看自己创建的岗位；
+					and create_by = #{loginName}
+				</if>
 			</if>
-			<if test="postCode != null and postCode != ''">
-				AND post_code like concat('%', #{postCode}, '%')
+			<if test="post.clientId != null and post.clientId != 'system' ">
+				AND client_id = #{post.clientId}
 			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
+			<if test="post.postCode != null and post.postCode != ''">
+				AND post_code like concat('%', #{post.postCode}, '%')
 			</if>
-			<if test="postName != null and postName != ''">
-				AND post_name like concat('%', #{postName}, '%')
+			<if test="post.status != null and post.status != ''">
+				AND status = #{post.status}
+			</if>
+			<if test="post.postName != null and post.postName != ''">
+				AND post_name like concat('%', #{post.postName}, '%')
 			</if>
 		</where>
 	</select>

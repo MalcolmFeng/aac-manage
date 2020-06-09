@@ -2,7 +2,10 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -58,10 +61,13 @@ public class SysDeptController extends BaseController
     public List<SysDept> list(SysDept dept)
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        String loginName = jwtPayload.getString("loginName");
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
 
-        List<SysDept> deptList = deptService.selectDeptList(dept, clientId);
+        List<SysDept> deptList = deptService.selectDeptList(dept, clientId, roleId, loginName);
         return deptList;
     }
 

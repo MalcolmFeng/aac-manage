@@ -16,7 +16,7 @@ public interface ISysPostService
      * @param post 岗位信息
      * @return 岗位信息集合
      */
-    public List<SysPost> selectPostList(SysPost post);
+    public List<SysPost> selectPostList(SysPost post,String loginName,Long roleId);
 
     /**
      * 查询所有岗位

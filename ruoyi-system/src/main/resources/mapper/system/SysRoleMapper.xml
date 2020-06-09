@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
 		<include refid="selectRoleContactVo"/>
 		where r.del_flag = '0'
-		<if test="parentUserId != null and parentUserId != 0 ">
+		<if test="parentUserId != null and parentUserId != 0 and roleId!= 106">
 			AND r.parent_user_id = #{parentUserId}
 		</if>
 		<if test="clientId != null and clientId != 'system' ">

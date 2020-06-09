@@ -18,7 +18,7 @@ public interface ISysDeptService
      * @param dept 部门信息
      * @return 部门信息集合
      */
-    public List<SysDept> selectDeptList(SysDept dept, String clientId);
+    public List<SysDept> selectDeptList(SysDept dept, String clientId, Long roleId, String loginName);
 
     /**
      * 查询部门管理树

@@ -28,6 +28,8 @@ public class SysUser extends BaseEntity
 
     private Long parentUserId;
 
+    private String parentLoginName;
+
     private String clientDomain;
 
     /** 部门ID */
@@ -392,5 +394,13 @@ public class SysUser extends BaseEntity
 
     public void setParentUserId(Long parentUserId) {
         this.parentUserId = parentUserId;
+    }
+
+    public String getParentLoginName() {
+        return parentLoginName;
+    }
+
+    public void setParentLoginName(String parentLoginName) {
+        this.parentLoginName = parentLoginName;
     }
 }

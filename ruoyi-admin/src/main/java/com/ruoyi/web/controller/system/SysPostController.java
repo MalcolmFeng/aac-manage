@@ -2,7 +2,10 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -59,11 +62,14 @@ public class SysPostController extends BaseController
         startPage();
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
+        String loginName = jwtPayload.getString("loginName");
         String clientId = jwtPayload.getString("clients");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
 
         post.setClientId(clientId);
 
-        List<SysPost> list = postService.selectPostList(post);
+        List<SysPost> list = postService.selectPostList(post,loginName,roleId);
         return getDataTable(list);
     }
 
@@ -73,7 +79,16 @@ public class SysPostController extends BaseController
     @ResponseBody
     public AjaxResult export(SysPost post)
     {
-        List<SysPost> list = postService.selectPostList(post);
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
+        post.setClientId(clientId);
+
+        List<SysPost> list = postService.selectPostList(post,loginName,roleId);
         ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
         return util.exportExcel(list, "岗位数据");
     }
@@ -120,6 +135,12 @@ public class SysPostController extends BaseController
         {
             return error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
         }
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
+
+        post.setClientId(clientId);
         post.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(postService.insertPost(post));
     }
