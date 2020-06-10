@@ -25,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectPostList" resultMap="SysPostResult">
 	    <include refid="selectPostVo"/>
 		<where>
+			1 = 1
 			<if test=" roleId != 1">
 				<if test=" roleId != 106">
 -- 					不是超级管理员，不是租户管理员，只能查看自己创建的岗位；
@@ -97,6 +98,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<insert id="insertPost" parameterType="SysPost" useGeneratedKeys="true" keyProperty="postId">
  		insert into sys_post(
  			<if test="postId != null and postId != 0">post_id,</if>
+			<if test="clientId != null and clientId != '' ">client_id,</if>
  			<if test="postCode != null and postCode != ''">post_code,</if>
  			<if test="postName != null and postName != ''">post_name,</if>
  			<if test="postSort != null and postSort != ''">post_sort,</if>
@@ -106,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			create_time
  		)values(
  			<if test="postId != null and postId != 0">#{postId},</if>
+			<if test="clientId != null and clientId != '' ">#{clientId},</if>
  			<if test="postCode != null and postCode != ''">#{postCode},</if>
  			<if test="postName != null and postName != ''">#{postName},</if>
  			<if test="postSort != null and postSort != ''">#{postSort},</if>
