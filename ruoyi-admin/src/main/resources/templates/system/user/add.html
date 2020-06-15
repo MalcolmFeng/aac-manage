@@ -113,6 +113,18 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">租户应用：</label>
+                        <div class="col-xs-10">
+                            <label th:each="client:${clients}" class="check-box">
+                                <input name="client" type="radio" th:value="${client.client_id}" th:text="${client.client_name}">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <h4 class="form-header h4">其他信息</h4>
             <div class="row">
                 <div class="col-sm-12">
@@ -213,11 +225,13 @@
 	        if ($.validate.form()) {
 	        	var data = $("#form-user-add").serializeArray();
 	        	var status = $("input[id='status']").is(':checked') == true ? 0 : 1;
+                var client = $("input[name='client']:checked").val();
 	        	var roleIds = $.form.selectCheckeds("role");
 	        	var postIds = $.form.selectSelects("post");
 	        	data.push({"name": "status", "value": status});
 	        	data.push({"name": "roleIds", "value": roleIds});
 	        	data.push({"name": "postIds", "value": postIds});
+	        	data.push({"name": "clientIds", "value":client});
 	        	$.operate.saveTab(prefix + "/add", data);
 	        }
 	    }

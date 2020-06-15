@@ -10,7 +10,7 @@ import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysRole;
-import com.ruoyi.system.service.ISysMenuService;
+import com.ruoyi.system.service.*;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
@@ -37,9 +37,6 @@ import com.ruoyi.framework.shiro.service.SysPasswordService;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.SysUserRole;
-import com.ruoyi.system.service.ISysPostService;
-import com.ruoyi.system.service.ISysRoleService;
-import com.ruoyi.system.service.ISysUserService;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +61,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private ISysPostService postService;
+
+    @Autowired
+    private IClientService clientService;
 
     @Autowired
     private SysPasswordService passwordService;
@@ -164,15 +164,17 @@ public class SysUserController extends BaseController
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
 
         SysRole role = new SysRole();
         role.setClientId(clientId);
+        role.setCreateBy(loginName);
 
         SysPost post = new SysPost();
         post.setClientId(clientId);
-
         mmap.put("roles", roleService.selectRoleList(userId,role));
         mmap.put("posts", postService.selectPostList(post,null , (long) 106 ));
+        mmap.put("clients",clientService.selectClientList(null));
         return prefix + "/add";
     }
 
@@ -207,6 +209,10 @@ public class SysUserController extends BaseController
         String clientId = jwtPayload.getString("clients");
         user.setClientId(clientId);
         user.setParentUserId(userId);
+        // 如果是管理员，并且给租户管理员关联了租户应用；
+        if ( SysUser.isAdmin(userId) && user.getClientIds()!=null && user.getClientIds().length > 0){
+            user.setClientId(user.getClientIds()[0]);
+        }
 
         return toAjax(userService.insertUser(user));
     }

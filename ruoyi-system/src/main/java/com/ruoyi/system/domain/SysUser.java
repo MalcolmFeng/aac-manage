@@ -104,6 +104,8 @@ public class SysUser extends BaseEntity
     /** 岗位组 */
     private Long[] postIds;
 
+    private String[] clientIds;
+
     public SysUser()
     {
 
@@ -402,5 +404,13 @@ public class SysUser extends BaseEntity
 
     public void setParentLoginName(String parentLoginName) {
         this.parentLoginName = parentLoginName;
+    }
+
+    public String[] getClientIds() {
+        return clientIds;
+    }
+
+    public void setClientIds(String[] clientIds) {
+        this.clientIds = clientIds;
     }
 }

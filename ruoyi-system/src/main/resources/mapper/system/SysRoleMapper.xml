@@ -48,6 +48,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="status != null and status != ''">
 			AND r.status = #{status}
 		</if>
+		<if test="createBy != null and createBy != ''">
+			AND r.create_by = #{createBy}
+		</if>
 		<if test="roleKey != null and roleKey != ''">
 			AND r.role_key like concat('%', #{roleKey}, '%')
 		</if>

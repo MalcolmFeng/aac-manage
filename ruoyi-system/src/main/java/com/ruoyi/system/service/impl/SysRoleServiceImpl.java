@@ -55,7 +55,10 @@ public class SysRoleServiceImpl implements ISysRoleService
         List<SysRole> roleList = null;
         if (SysUser.isAdmin(userId))
         {
-            roleList = roleMapper.selectRoleList(new SysRole());
+            // 超级管理员只查询自己创建的角色（暂定）
+            SysRole sysRole = new SysRole();
+            sysRole.setCreateBy(role.getCreateBy());
+            roleList = roleMapper.selectRoleList(sysRole);
         }
         else
         {
