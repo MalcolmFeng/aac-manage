@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.OauthClientDetailsMapper">
+
+	<!-- 按条件查询租户信息 -->
+	<select id="getClientInfo" resultType="com.ruoyi.system.domain.Client">
+        select
+        	*
+		from
+			oauth_client_details
+		where
+			client_id = #{client_id}
+    </select>
+
+	<!-- 查询租户列表 -->
+    <select id="selectClientList" resultType="com.ruoyi.system.domain.Client">
+		select
+        	*
+		from
+			oauth_client_details
+		where
+			del_flag != '2'
+	</select>
+
+    <insert id="insertClient" parameterType="com.ruoyi.system.domain.Client">
+ 		insert into oauth_client_details(
+			<if test="client_id != null and client_id != ''">client_id,</if>
+			<if test="client_secret != null and client_secret != ''">client_secret,</if>
+			<if test="client_name != null and client_name != ''">client_name,</if>
+			<if test="client_domain != null and client_domain != ''">client_domain,</if>
+			<if test="admin_id != null and admin_id != 0 ">admin_id,</if>
+			<if test="menu_root_id != null and menu_root_id != 0 ">menu_root_id,</if>
+			<if test="resource_ids != null and resource_ids != ''">resource_ids,</if>
+			<if test="scope != null and scope != ''">scope,</if>
+			<if test="authorized_grant_types != null and authorized_grant_types != ''">authorized_grant_types,</if>
+			<if test="web_server_redirect_uri != null and web_server_redirect_uri != ''">web_server_redirect_uri,</if>
+			<if test="authorities != null and authorities != ''">authorities,</if>
+			<if test="access_token_validity != null and access_token_validity != 0 ">access_token_validity,</if>
+			<if test="refresh_token_validity != null and refresh_token_validity != 0 ">refresh_token_validity,</if>
+			<if test="additional_information != null and additional_information != ''">additional_information,</if>
+			<if test="autoapprove != null and autoapprove != ''">autoapprove,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			create_time
+ 		)values(
+			<if test="client_id != null and client_id != ''">#{client_id},</if>
+			<if test="client_secret != null and client_secret != ''">#{client_secret},</if>
+			<if test="client_name != null and client_name != ''">#{client_name},</if>
+			<if test="client_domain != null and client_domain != ''">#{client_domain},</if>
+			<if test="admin_id != null and admin_id != 0 ">#{admin_id},</if>
+			<if test="menu_root_id != null and menu_root_id != 0 ">#{menu_root_id},</if>
+			<if test="resource_ids != null and resource_ids != ''">#{resource_ids},</if>
+			<if test="scope != null and scope != ''">#{scope},</if>
+			<if test="authorized_grant_types != null and authorized_grant_types != ''">#{authorized_grant_types},</if>
+			<if test="web_server_redirect_uri != null and web_server_redirect_uri != ''">#{web_server_redirect_uri},</if>
+			<if test="authorities != null and authorities != ''">#{authorities},</if>
+			<if test="access_token_validity != null and access_token_validity != 0 ">#{access_token_validity},</if>
+			<if test="refresh_token_validity != null and refresh_token_validity != 0 ">#{refresh_token_validity},</if>
+			<if test="additional_information != null and additional_information != ''">#{additional_information},</if>
+			<if test="autoapprove != null and autoapprove != ''">#{autoapprove},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			sysdate()
+ 		)
+	</insert>
+
+	<update id="updateClient" parameterType="com.ruoyi.system.domain.Client">
+		update oauth_client_details
+		<set>
+			<if test="client_secret != null and client_secret != ''">client_secret = #{client_secret},</if>
+			<if test="client_name != null and client_name != ''">client_name = #{client_name},</if>
+			<if test="client_domain != null and client_domain != ''">client_domain = #{client_domain},</if>
+			<if test="admin_id != null and admin_id != 0 ">admin_id = #{admin_id},</if>
+			<if test="menu_root_id != null and menu_root_id != 0 ">menu_root_id = #{menu_root_id},</if>
+			<if test="resource_ids != null and resource_ids != ''">resource_ids = #{resource_ids},</if>
+			<if test="scope != null and scope != ''">scope = #{scope},</if>
+			<if test="authorized_grant_types != null and authorized_grant_types != ''">authorized_grant_types = #{authorized_grant_types},</if>
+			<if test="web_server_redirect_uri != null and web_server_redirect_uri != ''">web_server_redirect_uri = #{web_server_redirect_uri},</if>
+			<if test="authorities != null and authorities != ''">authorities = #{authorities},</if>
+			<if test="access_token_validity != null and access_token_validity != 0 ">access_token_validity = #{access_token_validity},</if>
+			<if test="refresh_token_validity != null and refresh_token_validity != 0 ">refresh_token_validity = #{refresh_token_validity},</if>
+			<if test="additional_information != null and additional_information != ''">additional_information = #{additional_information},</if>
+			<if test="autoapprove != null and autoapprove != ''">autoapprove = #{autoapprove},</if>
+			<if test="remark != null and remark != ''">remark = #{remark},</if>
+			update_time = sysdate()
+		</set>
+		where client_id = #{client_id}
+	</update>
+
+	<delete id="deleteClientByIds" parameterType="string">
+		update oauth_client_details set del_flag = '2' where client_id = #{client_id}
+	</delete>
+
+</mapper> 

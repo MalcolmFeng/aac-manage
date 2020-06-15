@@ -25,8 +25,8 @@ import java.util.Map;
 @RequestMapping("/handler")
 public class CodeTokenHandlerController {
 
-    private String authServer = "http://172.19.221.76:7002";
-//    private String authServer = "http://localhost:7002";
+//    private String authServer = "http://172.19.221.76:7002";
+    private String authServer = "http://localhost:7002";
     private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 

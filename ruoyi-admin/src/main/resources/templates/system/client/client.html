@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('租户列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-12 search-collapse">
+					<form id="user-form">
+						<input type="hidden" id="deptId" name="deptId">
+		                <input type="hidden" id="parentId" name="parentId">
+						<div class="select-list">
+							<ul>
+								<li>
+									登录名称：<input type="text" name="loginName"/>
+								</li>
+								<li class="select-time">
+									<label>创建时间： </label>
+									<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+									<span>-</span>
+									<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+								</li>
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+				
+		        <div class="btn-group-sm" id="toolbar" role="group">
+					<a class="btn btn-success" onclick="$.operate.addTab()" th:if="${#strings.contains(perms,'system:user:add') || #strings.contains(perms,'*:*:*')}">
+		                <i class="fa fa-plus"></i> 新增
+		            </a>
+					<a class="btn btn-primary single disabled" onclick="$.operate.editTab()" th:if="${#strings.contains(perms,'system:user:edit') || #strings.contains(perms,'*:*:*')}"  >
+			            <i class="fa fa-edit"></i> 修改
+			        </a>
+		            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" th:if="${#strings.contains(perms,'system:user:remove') || #strings.contains(perms,'*:*:*')}"  >
+		                <i class="fa fa-remove"></i> 删除
+		            </a>
+		        </div>
+		        
+		        <div class="col-sm-12 select-table table-striped">
+				    <table id="bootstrap-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<script th:inline="javascript">
+		var editFlag = [[ ${#strings.contains(perms,'system:user:edit') || #strings.contains(perms,'*:*:*')}]];
+		var removeFlag = [[ ${#strings.contains(perms,'system:user:remove') || #strings.contains(perms,'*:*:*')}]];
+		var resetPwdFlag = [[ ${#strings.contains(perms,'system:user:resetPwd') || #strings.contains(perms,'*:*:*')}]];
+		var prefix = ctx + "system/client";
+
+		$(function() {
+		    var panehHidden = false;
+		    if ($(this).width() < 769) {
+		        panehHidden = true;
+		    }
+		    $('body').layout({ initClosed: panehHidden, west__size: 185 });
+		    queryUserList();
+		    queryDeptTree();
+		});
+
+		function queryUserList() {
+		    var options = {
+		        url: prefix + "/list",
+		        createUrl: prefix + "/add",
+		        updateUrl: prefix + "/edit/{id}",
+		        removeUrl: prefix + "/remove",
+		        exportUrl: prefix + "/export",
+		        importUrl: prefix + "/importData",
+		        importTemplateUrl: prefix + "/importTemplate",
+		        sortName: "createTime",
+		        sortOrder: "desc",
+		        modalName: "用户",
+		        columns: [{
+		            checkbox: true
+		        },
+		        {
+		            field: 'client_id',
+		            title: '租户Id'
+		        },
+				{
+					field: 'client_secret',
+					title: '租户密钥'
+				},
+		        {
+		            field: 'client_name',
+		            title: '租户名称',
+		            sortable: true
+		        },
+		        {
+		            field: 'client_domain',
+		            title: '租户根域名'
+		        },
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		                var actions = [];
+		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.client_id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.client_id + '\')"><i class="fa fa-remove"></i>删除</a> ');
+		                return actions.join('');
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		}
+		
+
+		
+		$('#btnExpand').click(function() {
+			$._tree.expandAll(true);
+		    $(this).hide();
+		    $('#btnCollapse').show();
+		});
+		
+		$('#btnCollapse').click(function() {
+			$._tree.expandAll(false);
+		    $(this).hide();
+		    $('#btnExpand').show();
+		});
+		
+		$('#btnRefresh').click(function() {
+			queryDeptTree();
+		});
+
+	</script>
+</body>
+</html>
