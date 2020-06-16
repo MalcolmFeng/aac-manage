@@ -105,15 +105,13 @@
             	<div class="col-sm-12">
                     <div class="form-group">
                         <label class="col-xs-2 control-label">角色：</label>
-                        <div class="col-xs-10">
-                            <label th:each="role:${roles}" class="check-box">
-								<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:disabled="${role.status == '1'}">
-							</label>
+                        <div class="col-xs-10" id="abc">
+
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div id="clientRadio" class="row" style="display: none">
                 <div class="col-sm-12">
                     <div class="form-group">
                         <label class="col-xs-2 control-label">租户应用：</label>
@@ -149,7 +147,6 @@
 	<th:block th:include="include :: select2-js" />
 	<script>
 	    var prefix = ctx + "system/user";
-	
         $("#form-user-add").validate({
         	onkeyup: false,
         	rules:{
@@ -220,7 +217,7 @@
             },
             focusCleanup: true
         });
-        
+
         function submitHandler() {
 	        if ($.validate.form()) {
 	        	var data = $("#form-user-add").serializeArray();
@@ -260,11 +257,43 @@
 			}
 		}
 
+		var roleSelectFlag = false;
+		function selectChange(obj){
+            if ($(obj).val() == 106){
+                roleSelectFlag = !roleSelectFlag;
+            }
+            if (roleSelectFlag){
+                $("#clientRadio").css({'display':'block'});
+            }else{
+                $("#clientRadio").css({'display':'none'});
+            }
+        }
+
 		$(function() {
             $('#post').select2({
                 placeholder: "请选择岗位",
                 allowClear: true
             });
+
+            $.ajax({
+                type : "POST",
+                contentType: "application/json;charset=UTF-8",
+                url : "/system/user/getRoles",
+                success : function(result) {
+                    var html = '';
+                    $(result).each(function(index,element){
+                        html += '<label class="check-box">\n' +
+                                '   <input class="roleCheck" onclick="selectChange(this)" name="role" type="checkbox" value="'+ element.roleId+'"  > '+ element.roleName +' \n' +
+                                '</label>'
+                    });
+                    $("#abc").append(html);
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+
         })
     </script>
 </body>

@@ -175,6 +175,23 @@ public class SysUserController extends BaseController
         return prefix + "/add";
     }
 
+
+    @PostMapping("/getRoles")
+    @ResponseBody
+    public Object getRoles(){
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
+        SysRole role = new SysRole();
+        role.setClientId(clientId);
+        role.setCreateBy(loginName);
+
+        SysPost post = new SysPost();
+        post.setClientId(clientId);
+        return roleService.selectRoleList(userId,role);
+    }
+
     /**
      * 新增保存用户
      */
