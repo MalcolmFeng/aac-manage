@@ -63,6 +63,9 @@ public class SysUserController extends BaseController
     private IClientService clientService;
 
     @Autowired
+    private IClientApproveService clientApproveService;
+
+    @Autowired
     private SysPasswordService passwordService;
 
     @Autowired
@@ -229,6 +232,57 @@ public class SysUserController extends BaseController
         }
 
         return toAjax(userService.insertUser(user));
+    }
+
+    /**
+     * 注册
+     */
+    @GetMapping("/register")
+    public String register(ModelMap mmap) {
+        mmap.put("clients",clientService.selectClientList(null));
+        return prefix + "/register_new";
+    }
+
+    /**
+     * 申请成为用户
+     */
+    @Log(title = "用户管理", businessType = BusinessType.INSERT)
+    @PostMapping("/apply")
+    @ResponseBody
+    public AjaxResult apply(@Validated SysUser user) {
+        if (UserConstants.USER_NAME_NOT_UNIQUE.equals(userService.checkLoginNameUnique(user.getLoginName())))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，登录账号已存在");
+        }
+        else if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，手机号码已存在");
+        }
+        else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
+        }
+        String salt = BCrypt.gensalt();
+        user.setSalt(salt);
+        user.setPassword(BcryptUtil.encode(user.getPassword(),salt));
+
+        user.setCreateBy("-1");
+        Long none = -1L;
+        user.setClientId("-1");
+        user.setParentUserId(none);
+
+        int re = userService.insertUser(user);
+        Long userId = userService.selectUserByLoginName(user.getLoginName()).getUserId();
+
+        for(String clinetId : user.getClientIds()) {
+            Approve approve = new Approve();
+            approve.setUserId(userId);
+            approve.setClientId(clinetId);
+            approve.setStatus(false); // false 审批中 true 通过
+            clientApproveService.insertApprove(approve);
+        }
+
+        return toAjax(re);
     }
 
     /**

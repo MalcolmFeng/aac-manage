@@ -265,6 +265,8 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/system/user/register", "anon");
         filterChainDefinitionMap.put("/system/user/apply", "anon");
         filterChainDefinitionMap.put("/system/user/checkLoginNameUnique", "anon");
+        filterChainDefinitionMap.put("/system/user/checkEmailUnique", "anon");
+        filterChainDefinitionMap.put("/system/user/checkPhoneUnique", "anon");
 
 
         // 退出filter
