@@ -262,6 +262,10 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/system/switchSkin","anon");
 //        filterChainDefinitionMap.put("/demo/**","anon");
         filterChainDefinitionMap.put("/index","anon");
+        filterChainDefinitionMap.put("/system/user/register", "anon");
+        filterChainDefinitionMap.put("/system/user/apply", "anon");
+        filterChainDefinitionMap.put("/system/user/checkLoginNameUnique", "anon");
+
 
         // 退出filter
         filterChainDefinitionMap.put("/logout", "logout");
