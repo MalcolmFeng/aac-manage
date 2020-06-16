@@ -50,16 +50,14 @@
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">用户性别：</label>
+                                    <label class="col-sm-4 control-label">性别：</label>
                                     <div class="col-sm-8">
                                         <select name="sex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
                                             <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
 
@@ -100,8 +98,8 @@
                 </div>
 
                 <div class="row">
-                    <div>
-                        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>
+                    <div class="py-5 text-center">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>提 交</button>
                     </div>
                 </div>
             </form>
