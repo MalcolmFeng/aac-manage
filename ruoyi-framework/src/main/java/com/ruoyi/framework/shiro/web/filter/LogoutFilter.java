@@ -58,7 +58,8 @@ public class LogoutFilter extends AccessControlFilter
 
 
 //        wrapper.sendRedirect("http://localhost:7000");
-        wrapper.sendRedirect("http://172.19.221.76:7000");
+//        wrapper.sendRedirect("http://172.19.221.76:7000");
+        wrapper.sendRedirect("http://172.26.212.224:7000");
 
         return false;
     }
