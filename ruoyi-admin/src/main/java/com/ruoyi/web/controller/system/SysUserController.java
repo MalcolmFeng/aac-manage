@@ -8,8 +8,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
-import com.ruoyi.system.domain.SysPost;
-import com.ruoyi.system.domain.SysRole;
+import com.ruoyi.system.domain.*;
 import com.ruoyi.system.service.*;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
@@ -35,8 +34,6 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.shiro.service.SysPasswordService;
 import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.system.domain.SysUser;
-import com.ruoyi.system.domain.SysUserRole;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +61,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private IClientService clientService;
+
+    @Autowired
+    private IClientApproveService clientApproveService;
 
     @Autowired
     private SysPasswordService passwordService;
@@ -232,6 +232,57 @@ public class SysUserController extends BaseController
         }
 
         return toAjax(userService.insertUser(user));
+    }
+
+    /**
+     * 注册
+     */
+    @GetMapping("/register")
+    public String register(ModelMap mmap) {
+        mmap.put("clients",clientService.selectClientList(null));
+        return prefix + "/register_new";
+    }
+
+    /**
+     * 申请成为用户
+     */
+    @Log(title = "用户管理", businessType = BusinessType.INSERT)
+    @PostMapping("/apply")
+    @ResponseBody
+    public AjaxResult apply(@Validated SysUser user) {
+        if (UserConstants.USER_NAME_NOT_UNIQUE.equals(userService.checkLoginNameUnique(user.getLoginName())))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，登录账号已存在");
+        }
+        else if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，手机号码已存在");
+        }
+        else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
+        {
+            return error("注册用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
+        }
+        String salt = BCrypt.gensalt();
+        user.setSalt(salt);
+        user.setPassword(BcryptUtil.encode(user.getPassword(),salt));
+
+        user.setCreateBy("-1");
+        Long none = -1L;
+        user.setClientId("-1");
+        user.setParentUserId(none);
+
+        int re = userService.insertUser(user);
+        Long userId = userService.selectUserByLoginName(user.getLoginName()).getUserId();
+
+        for(String clinetId : user.getClientIds()) {
+            Approve approve = new Approve();
+            approve.setUserId(userId);
+            approve.setClientId(clinetId);
+            approve.setStatus(false); // false 审批中 true 通过
+            clientApproveService.insertApprove(approve);
+        }
+
+        return toAjax(re);
     }
 
     /**
