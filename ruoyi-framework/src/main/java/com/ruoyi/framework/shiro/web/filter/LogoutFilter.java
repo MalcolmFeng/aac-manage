@@ -57,9 +57,9 @@ public class LogoutFilter extends AccessControlFilter
         response.addCookie(cookie2);
 
 
-//        wrapper.sendRedirect("http://localhost:7000");
-//        wrapper.sendRedirect("http://172.19.221.76:7000");
-        wrapper.sendRedirect("http://172.26.212.224:7000");
+        wrapper.sendRedirect("http://localhost:7000");
+//        wrapper.sendRedirect("http://172.19.221.76:7000");  // 济南
+//        wrapper.sendRedirect("http://172.26.212.224:7000");  // 天津
 
         return false;
     }
