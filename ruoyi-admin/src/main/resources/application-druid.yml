@@ -2,10 +2,13 @@
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
-        driverClassName: com.mysql.jdbc.Driver
+        driverClassName: com.mysql.cj.jdbc.Driver
         druid:
             # 主库数据源
             master:
+#                url: jdbc:mysql://172.26.143.166:38965/tj_ca?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+#                username: tj_ca
+#                password: '&cc$jaAiGcd3HQ!l'
                 url: jdbc:mysql://172.19.221.77:3306/oauth?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
                 username: oauth
                 password: oauth@0606

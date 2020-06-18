@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 @Component
 public class GetUserFromJWT {
 
-    private static String loginUrl = "http://localhost:7002/oauth/authorize?response_type=code&client_id=tencent&scope=all&redirect_uri=http://localhost:80/handler/code?target="; // 认证中心登录页
+    private static String loginUrl = "http://172.26.212.224:7002/oauth/authorize?response_type=code&client_id=tencent&scope=all&redirect_uri=http://localhost:80/handler/code?target="; // 认证中心登录页
 
     public static SysUser getUserFromJWT(){
         HttpServletRequest request = ServletUtils.getRequest();
