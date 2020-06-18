@@ -47,9 +47,11 @@ public class SysIndexController extends BaseController
 
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
-        Long roleId = rolesArray.getLong(0);
+        if(rolesArray.size() != 0) {
+            Long roleId = rolesArray.getLong(0);
 
-        user.setRoleId(roleId);
+            user.setRoleId(roleId);
+        }
 
         // 根据用户id取出菜单
         List<SysMenu> menus = menuService.selectMenusByUser(user);

@@ -278,7 +278,7 @@ public class SysUserController extends BaseController
             Approve approve = new Approve();
             approve.setUserId(userId);
             approve.setClientId(clinetId);
-            approve.setStatus(false); // false 审批中 true 通过
+            approve.setStatus(0); // 0 审批中 1 通过 2拒绝
             clientApproveService.insertApprove(approve);
         }
 

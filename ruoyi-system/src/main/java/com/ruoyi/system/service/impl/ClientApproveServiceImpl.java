@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.*;
 
+import java.util.List;
+
 @Service
 public class ClientApproveServiceImpl implements IClientApproveService
 {
@@ -15,5 +17,15 @@ public class ClientApproveServiceImpl implements IClientApproveService
     @Override
     public int insertApprove(Approve approve) {
         return clientApproveMapper.insertApprove(approve);
+    }
+
+    @Override
+    public List<Approve> selectApproveList(Long user_id){
+        return clientApproveMapper.selectApproveListByUserId(user_id);
+    }
+
+    @Override
+    public int updateApprove(Long id, int result){
+        return clientApproveMapper.updateApproveById(id, result);
     }
 }
