@@ -20,6 +20,13 @@ public interface SysUserMapper
     public List<SysUser> selectUserList(@Param("sysUser") SysUser sysUser);
 
     /**
+     * 查询client_approve里的用户列表
+     * @param sysUser
+     * @return
+     */
+    public List<SysUser> selectApproveListUser(SysUser sysUser);
+
+    /**
      * 根据条件分页查询未已配用户角色列表
      * 
      * @param user 用户信息

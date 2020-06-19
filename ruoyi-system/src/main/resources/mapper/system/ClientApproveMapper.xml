@@ -39,7 +39,7 @@
 
     <update id="updateApproveById">
       UPDATE client_approve
-      SET status = #{arg1}
+      SET status = #{arg1}, approve_time = sysdate()
       WHERE id = #{arg0}
     </update>
 
