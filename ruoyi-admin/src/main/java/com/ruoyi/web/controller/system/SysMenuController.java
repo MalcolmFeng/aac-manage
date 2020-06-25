@@ -62,6 +62,15 @@ public class SysMenuController extends BaseController
     @ResponseBody
     public List<SysMenu> getUserMenu(){
         SysUser user = GetUserFromJWT.getUserFromJWT();
+
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        if(rolesArray.size() != 0) {
+            Long roleId = rolesArray.getLong(0);
+
+            user.setRoleId(roleId);
+        }
+
         List<SysMenu> menus = menuService.selectMenusByUser(user);
         return menus;
     }
