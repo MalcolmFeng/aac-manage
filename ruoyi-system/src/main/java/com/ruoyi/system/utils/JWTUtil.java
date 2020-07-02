@@ -9,6 +9,9 @@ import org.apache.commons.codec.binary.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 令牌工具类
+ */
 public class JWTUtil {
 
     /**
