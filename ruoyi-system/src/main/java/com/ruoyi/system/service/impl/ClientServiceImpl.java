@@ -63,6 +63,11 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
+    public int updateClientStatus(Client client) {
+        return clientDetailsMapper.updateClientStatus(client);
+    }
+
+    @Override
     public int deleteClientByIds(String clientId) {
         return clientDetailsMapper.deleteClientByIds(clientId);
     }

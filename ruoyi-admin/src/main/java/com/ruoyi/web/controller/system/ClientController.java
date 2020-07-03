@@ -118,4 +118,11 @@ public class ClientController extends BaseController {
         }
     }
 
+    @Log(title = "租户审批", businessType = BusinessType.UPDATE)
+    @PostMapping("/approve")
+    @ResponseBody
+    public AjaxResult approve(@Validated Client client) {
+        return toAjax(clientService.updateClientStatus(client));
+    }
+
 }

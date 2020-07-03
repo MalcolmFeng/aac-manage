@@ -2,6 +2,8 @@ package com.ruoyi.system.domain;
 
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import java.util.Date;
+
 public class Client extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +23,33 @@ public class Client extends BaseEntity {
     private int	refresh_token_validity;
     private String additional_information;
     private String autoapprove;
+    private Date create_time;
+    private Date approve_time;
+    private int status = -1;
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
+
+    public Date getApprove_time() {
+        return approve_time;
+    }
+
+    public void setApprove_time(Date approve_time) {
+        this.approve_time = approve_time;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public String getClient_id() {
         return client_id;

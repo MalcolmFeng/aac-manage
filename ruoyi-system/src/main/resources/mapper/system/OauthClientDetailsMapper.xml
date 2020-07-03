@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			oauth_client_details
 		where
 			del_flag != '2'
+			and status != 2
 	</select>
 
     <insert id="insertClient" parameterType="com.ruoyi.system.domain.Client">
@@ -63,6 +64,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			sysdate()
  		)
 	</insert>
+
+	<update id="updateClientStatus" parameterType="com.ruoyi.system.domain.Client">
+		update oauth_client_details
+		set status = #{status}, approve_time = sysdate()
+		where client_id = #{client_id}
+	</update>
 
 	<update id="updateClient" parameterType="com.ruoyi.system.domain.Client">
 		update oauth_client_details

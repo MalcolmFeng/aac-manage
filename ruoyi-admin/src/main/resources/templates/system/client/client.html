@@ -103,6 +103,14 @@
 		            field: 'client_domain',
 		            title: '租户根域名'
 		        },
+				{
+					field: 'create_time',
+					title: '申请时间'
+				},
+				{
+					field: 'approve_time',
+					title: '审批时间'
+				},
 		        {
 		            title: '操作',
 		            align: 'center',
@@ -112,12 +120,30 @@
 		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.client_id + '\')"><i class="fa fa-remove"></i>删除</a> ');
 		                return actions.join('');
 		            }
-		        }]
+		        },
+				{
+					title: '审批',
+					align: 'center',
+					formatter: function(value, row, index) {
+						var actions = [];
+						if(row.status == 0){
+							actions.push('<a class="btn btn-success btn-xs" ' + ' href="javascript:void(0)" onclick="agree(\'' + row.client_id + '\')"><i class="fa fa-edit"></i>同意</a> ');
+							actions.push('<a class="btn btn-danger btn-xs" ' + ' href=javascript:void(0)" onclick="refuse(\'' + row.client_id + '\')"><i class="fa fa-remove"></i>拒绝</a> ');
+							return actions.join('');
+						}
+					}
+				}]
 		    };
 		    $.table.init(options);
 		}
-		
 
+		function refuse(id) {
+			$.operate.post(prefix + "/approve", { "client_id": id, "status": 2 });
+		}
+
+		function agree(id) {
+			$.operate.post(prefix + "/approve", { "client_id": id, "status": 1 });
+		}
 		
 		$('#btnExpand').click(function() {
 			$._tree.expandAll(true);

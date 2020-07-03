@@ -41,6 +41,11 @@ public interface IClientService {
     int updateClient(Client client);
 
     /**
+     * 更新租户审批状态
+     */
+    int updateClientStatus(Client client);
+
+    /**
      * 删除租户
      * @param ids
      * @return

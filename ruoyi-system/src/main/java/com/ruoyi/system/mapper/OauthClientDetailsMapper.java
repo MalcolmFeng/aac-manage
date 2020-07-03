@@ -41,6 +41,13 @@ public interface OauthClientDetailsMapper {
     int updateClient(Client client);
 
     /**
+     * 更新租户审批状态
+     * @param client
+     * @return
+     */
+    int updateClientStatus(Client client);
+
+    /**
      * 通过租户Id删除租户
      * @param clientId
      * @return
