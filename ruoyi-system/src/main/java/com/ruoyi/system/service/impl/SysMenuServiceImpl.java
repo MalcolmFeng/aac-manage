@@ -67,17 +67,20 @@ public class SysMenuServiceImpl implements ISysMenuService
             // 加载所有自己创建的菜单，在左侧列表进行显示
             List<SysMenu> selftMenu = menuMapper.selectMenusByClientSelf(user.getClientId(),user.getRoleId(),user.getLoginName());
             List<Long> contained = new ArrayList<>();
-            for (SysMenu sysMenu : menus){
-                contained.add(sysMenu.getMenuId());
-            }
             for (SysMenu temp : selftMenu){
+                menus.add(temp);
+            }
+            for (SysMenu selftMenuItem : selftMenu){
+                contained.add(selftMenuItem.getMenuId());
+            }
+
+            List<SysMenu> menuSys = menuMapper.selectMenusByUserId(user.getUserId());
+            for (SysMenu temp : menuSys){
                 if (contained.contains(temp.getMenuId())){
                     continue;
                 }
                 menus.add(temp);
             }
-
-            menus = menuMapper.selectMenusByUserId(user.getUserId());
 
         }
         return getChildPerms(menus, 0);
