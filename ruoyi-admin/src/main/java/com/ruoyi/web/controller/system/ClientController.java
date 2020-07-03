@@ -73,7 +73,7 @@ public class ClientController extends BaseController {
         String clientId = jwtPayload.getString("clients");
         JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
         Long roleId = rolesArray.getLong(0);
-
+        // 超级管理员或租户管理员才允许获取租户信息
         if (roleId == 106 || roleId ==1){
             Client client = new Client();
             client.setClient_id(clientId);

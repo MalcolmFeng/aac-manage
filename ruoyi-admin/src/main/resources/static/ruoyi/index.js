@@ -52,8 +52,7 @@ $(function() {
 
 });
 
-$(window).bind("load resize",
-function() {
+$(window).bind("load resize", function() {
     if ($(this).width() < 769) {
         $('body').addClass('canvas-menu');
         $("nav .logo").addClass("hide");
@@ -606,3 +605,8 @@ $(function() {
         }
     })
 });
+
+$(document).ready(function () {
+    var a = $("#side-menu").find("a.menuItem");
+    $(a[0]).click();
+})

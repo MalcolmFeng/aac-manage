@@ -50,7 +50,7 @@ public class ClientServiceImpl implements IClientService {
     @Override
     public int insertClient(Client client) {
         client.setScope("all,read,write");
-        client.setAuthorized_grant_types("authorization_code,refresh_code");
+        client.setAuthorized_grant_types("authorization_code,password,refresh_token,implicit,client_credentials");
         client.setAuthorities("ROLE_TRUSTED_CLIENT");
         client.setAccess_token_validity(3600);
         client.setRefresh_token_validity(3600);
