@@ -3338,7 +3338,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 #content-main {
-    height: calc(100% - 127px);
+    height: calc(100% - 40px);
     overflow: hidden;
 }
 

@@ -173,47 +173,52 @@
     
     <!--右侧部分开始-->
     <div id="page-wrapper" class="gray-bg dashbard-1">
-        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2" style="color:#FFF;" href="#" title="收起菜单">
-                    	<i class="fa fa-bars"></i>
-                    </a>
-                </div>
-                <ul class="nav navbar-top-links navbar-right welcome-message">
-<!--                <li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>-->
-<!--                <li><a title="开发文档" href="http://health.inspur.com/open-portal/jsp/portal/dev/devguide.jsp" target="_blank"><i class="fa fa-question-circle"></i> 开发文档</a></li>-->
-	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>
-                    <li class="dropdown user-menu">
-						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-<!--							<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="user-image">-->
-							<span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="mt5">
-								<a th:href="@{/system/user/profile}" class="menuItem">
-								<i class="fa fa-user"></i> 个人中心</a>
-							</li>
-							<li>
-								<a onclick="resetPwd()">
-								<i class="fa fa-key"></i> 修改密码</a>
-							</li>
-							<li>
-								<a onclick="switchSkin()">
-								<i class="fa fa-dashboard"></i> 切换主题</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a th:href="@{logout}">
-								<i class="fa fa-sign-out"></i> 退出登录</a>
-							</li>
-						</ul>
-					</li>
-                </ul>
-            </nav>
-        </div>
-        <div class="row content-tabs">
-            <button class="roll-nav roll-left tabLeft">
+<!--        <div class="row border-bottom">-->
+<!--            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0;min-height: 30px !important;height: 30px;">-->
+<!--                <div class="navbar-header">-->
+<!--                    <a class="navbar-minimalize minimalize-styl-2" style="color:#FFF;" href="#" title="收起菜单">-->
+<!--                    	<i class="fa fa-bars"></i>-->
+<!--                    </a>-->
+<!--                </div>-->
+<!--                <ul class="nav navbar-top-links navbar-right welcome-message">-->
+<!--&lt;!&ndash;                <li><a title="视频教程" href="http://doc.ruoyi.vip/ruoyi/document/spjc.html" target="_blank"><i class="fa fa-video-camera"></i> 视频教程</a></li>&ndash;&gt;-->
+<!--&lt;!&ndash;                <li><a title="开发文档" href="http://health.inspur.com/open-portal/jsp/portal/dev/devguide.jsp" target="_blank"><i class="fa fa-question-circle"></i> 开发文档</a></li>&ndash;&gt;-->
+<!--	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> 全屏显示</a></li>-->
+<!--                    <li class="dropdown user-menu">-->
+<!--						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">-->
+<!--&lt;!&ndash;							<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="user-image">&ndash;&gt;-->
+<!--							<span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>-->
+<!--						</a>-->
+<!--						<ul class="dropdown-menu">-->
+<!--							<li class="mt5">-->
+<!--								<a th:href="@{/system/user/profile}" class="menuItem">-->
+<!--								<i class="fa fa-user"></i> 个人中心</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a onclick="resetPwd()">-->
+<!--								<i class="fa fa-key"></i> 修改密码</a>-->
+<!--							</li>-->
+<!--							<li>-->
+<!--								<a onclick="switchSkin()">-->
+<!--								<i class="fa fa-dashboard"></i> 切换主题</a>-->
+<!--							</li>-->
+<!--							<li class="divider"></li>-->
+<!--							<li>-->
+<!--								<a th:href="@{logout}">-->
+<!--								<i class="fa fa-sign-out"></i> 退出登录</a>-->
+<!--							</li>-->
+<!--						</ul>-->
+<!--					</li>-->
+<!--                </ul>-->
+<!--            </nav>-->
+<!--        </div>-->
+        <div class="row content-tabs" style="position: relative;padding-left: 40px;">
+			<div class="navbar-header" style="height: 40px;width: 40px;overflow: hidden;position: absolute;top: -14px;left: -12px;z-index: 99999">
+				<a class="navbar-minimalize minimalize-styl-2" style="color:grey;" href="#" title="收起菜单">
+					<i class="fa fa-bars"></i>
+				</a>
+			</div>
+            <button class="roll-nav roll-left tabLeft" style="position: absolute;left: 40px;">
                 <i class="fa fa-backward"></i>
             </button>
             <nav class="page-tabs menuTabs">
@@ -232,9 +237,9 @@
         <div class="row mainContent" id="content-main">
             <iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" frameborder="0" seamless></iframe>
         </div>
-        <div class="footer">
-            <div class="pull-right">© [[${copyrightYear}]] Inspur Copyright </div>
-        </div>
+<!--        <div class="footer">-->
+<!--            <div class="pull-right">© [[${copyrightYear}]] Inspur Copyright </div>-->
+<!--        </div>-->
     </div>
     <!--右侧部分结束-->
 </div>
