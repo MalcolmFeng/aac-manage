@@ -1,28 +1,21 @@
 package com.ruoyi.framework.shiro.web.filter;
 
-import com.ruoyi.common.utils.ServletUtils;
+import com.alibaba.fastjson.JSONObject;
+import com.ruoyi.system.utils.SignerUtils;
 import com.ruoyi.framework.util.TokenUtils;
-import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.utils.JWTUtil;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -47,22 +40,29 @@ public class TokenCheckFilter extends AccessControlFilter {
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
 
-        // 如果没有携带token，拒绝访问
+        // 0.如果没有携带token，拒绝访问
         String token = TokenUtils.getTokenFromRequest(request);
 
         if (token == null){
             return false;
         }
 
-        // 校验token
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("token", token);
+        // 1.本地验签
+        boolean result = JWTUtil.tokenVerify(token);
+        if (result){
+            request.setAttribute("token",token);
+            return true;
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        String authorization = "Basic " + Base64.getUrlEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
-        headers.set("Authorization", authorization);
-        headers.set("Content-Type", "application/x-www-form-urlencoded");
+        // 2.远程验签
         try {
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("token", token);
+
+            HttpHeaders headers = new HttpHeaders();
+            String authorization = "Basic " + Base64.getUrlEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
+            headers.set("Authorization", authorization);
+            headers.set("Content-Type", "application/x-www-form-urlencoded");
             Map map = (Map) new RestTemplate().exchange(authServer+"/oauth/check_token", HttpMethod.POST, new HttpEntity(formData, headers), Map.class, new Object[0]).getBody();
 
             // 给后边的过滤器使用
@@ -70,6 +70,7 @@ public class TokenCheckFilter extends AccessControlFilter {
 
             // 校验token成功，允许访问
             return true;
+
         } catch (Exception e) {
             // 校验token无效，拒绝访问
             return false;

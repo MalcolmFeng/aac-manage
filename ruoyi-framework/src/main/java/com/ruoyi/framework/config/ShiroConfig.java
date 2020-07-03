@@ -243,6 +243,43 @@ public class ShiroConfig
         shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
         // Shiro连接约束配置，即过滤链的定义
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+
+        // 对静态资源设置匿名访问
+        filterChainDefinitionMap.put("/admin/handler/*", "anon");
+        filterChainDefinitionMap.put("/admin/common/*","anon");
+        filterChainDefinitionMap.put("/admin/favicon.ico**", "anon");
+        filterChainDefinitionMap.put("/admin/ruoyi.png**", "anon");
+        filterChainDefinitionMap.put("/admin/css/**", "anon");
+        filterChainDefinitionMap.put("/admin/docs/**", "anon");
+        filterChainDefinitionMap.put("/admin/fonts/**", "anon");
+        filterChainDefinitionMap.put("/admin/img/**", "anon");
+        filterChainDefinitionMap.put("/admin/ajax/**", "anon");
+        filterChainDefinitionMap.put("/admin/js/**", "anon");
+        filterChainDefinitionMap.put("/admin", "anon");
+        filterChainDefinitionMap.put("/admin/index","anon");
+//        filterChainDefinitionMap.put("/demo/**","anon");
+        filterChainDefinitionMap.put("/admin/ruoyi/**", "anon");
+        filterChainDefinitionMap.put("/admin/captcha/captchaImage**", "anon");
+        filterChainDefinitionMap.put("/admin/system/user/profile/resetPwd","anon");
+        filterChainDefinitionMap.put("/admin/system/user/profile/checkPassword","anon");
+        filterChainDefinitionMap.put("/admin/system/user/profile*","anon");
+        filterChainDefinitionMap.put("/admin/system/switchSkin","anon");
+        filterChainDefinitionMap.put("/admin/system/client/add","anon");  // 新增租户
+        filterChainDefinitionMap.put("/admin/system/user/register", "anon");
+        filterChainDefinitionMap.put("/admin/system/user/apply", "anon");
+        filterChainDefinitionMap.put("/admin/system/user/checkLoginNameUnique", "anon");
+        filterChainDefinitionMap.put("/admin/system/user/checkEmailUnique", "anon");
+        filterChainDefinitionMap.put("/admin/system/user/checkPhoneUnique", "anon");
+
+
+        // 退出filter
+        filterChainDefinitionMap.put("/admin/logout", "logout");
+        // 不需要拦截的访问
+        filterChainDefinitionMap.put("/admin/login", "anon,captchaValidate");
+        // 注册相关
+        filterChainDefinitionMap.put("/admin/register", "anon,captchaValidate");
+
+
         // 对静态资源设置匿名访问
         filterChainDefinitionMap.put("/handler/*", "anon");
         filterChainDefinitionMap.put("/common/*","anon");
@@ -255,13 +292,14 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/ajax/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/ruoyi/**", "anon");
+        filterChainDefinitionMap.put("/index","anon");
+//        filterChainDefinitionMap.put("/demo/**","anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
         filterChainDefinitionMap.put("/system/user/profile/resetPwd","anon");
         filterChainDefinitionMap.put("/system/user/profile/checkPassword","anon");
         filterChainDefinitionMap.put("/system/user/profile*","anon");
         filterChainDefinitionMap.put("/system/switchSkin","anon");
-//        filterChainDefinitionMap.put("/demo/**","anon");
-        filterChainDefinitionMap.put("/index","anon");
+        filterChainDefinitionMap.put("/system/client/add","anon");  // 新增租户
         filterChainDefinitionMap.put("/system/user/register", "anon");
         filterChainDefinitionMap.put("/system/user/apply", "anon");
         filterChainDefinitionMap.put("/system/user/checkLoginNameUnique", "anon");
@@ -292,7 +330,8 @@ public class ShiroConfig
 
         // 所有请求需要认证
 //        filterChainDefinitionMap.put("/**", "user,kickout,onlineSession,syncOnlineSession,tokenCheckFilter");
-        filterChainDefinitionMap.put("/**", "tokenCheckFilter,tokenAuthen");
+//        filterChainDefinitionMap.put("/**", "tokenCheckFilter,tokenAuthen");
+        filterChainDefinitionMap.put("/**", "tokenCheckFilter");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         return shiroFilterFactoryBean;

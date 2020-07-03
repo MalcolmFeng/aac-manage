@@ -66,6 +66,25 @@ public class ClientController extends BaseController {
         return getDataTable(list);
     }
 
+    @RequestMapping("/getClientInfoByClientId")
+    @ResponseBody
+    public Object getClientInfoByClientId() {
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        String clientId = jwtPayload.getString("clients");
+        JSONArray rolesArray = JSON.parseArray(jwtPayload.getString("rolesSet"));
+        Long roleId = rolesArray.getLong(0);
+
+        if (roleId == 106 || roleId ==1){
+            Client client = new Client();
+            client.setClient_id(clientId);
+            List<Client> list = clientService.selectClientList(client);
+            if (list!=null && list.size()>0){
+                return list.get(0);
+            }
+        }
+        return "无权限查询租户信息";
+    }
+
     /**
      * 新增用户页面
      */

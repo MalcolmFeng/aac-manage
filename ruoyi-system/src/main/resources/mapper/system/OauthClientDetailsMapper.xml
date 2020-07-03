@@ -23,6 +23,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where
 			del_flag != '2'
 			and status != 2
+			<if test="client_id != '' and  client_id != null">
+				and client_id = #{client_id}
+			</if>
 	</select>
 
     <insert id="insertClient" parameterType="com.ruoyi.system.domain.Client">
