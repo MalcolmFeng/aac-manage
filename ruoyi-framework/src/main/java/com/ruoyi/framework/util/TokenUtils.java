@@ -20,10 +20,10 @@ public class TokenUtils {
     public static String getTokenFromRequest(HttpServletRequest request) {
         // 分别在 param、header、cookies中查询Token
         String token = request.getParameter("token");
-        if (token == null) {
+        if (token == null || token.equals("")) {
             token = request.getHeader("token");
         }
-        if (token == null) {
+        if (token == null || token.equals("")) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null){
                 for (Cookie cookie : cookies) {
@@ -35,7 +35,7 @@ public class TokenUtils {
                 }
             }
         }
-        if (token == null){
+        if (token == null || token.equals("")){
             token = (String) request.getAttribute("token");
         }
         return token;
