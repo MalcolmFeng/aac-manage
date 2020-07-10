@@ -141,6 +141,7 @@
         <div class="col-sm-offset-5 col-sm-10">
             <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
             <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+            <p id="token" style="display: none" th:text="${#httpServletRequest.getParameter('token')}"></p>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -274,11 +275,15 @@
                 placeholder: "请选择岗位",
                 allowClear: true
             });
+            var token = $("#token").text();
 
             $.ajax({
                 type : "POST",
                 contentType: "application/json;charset=UTF-8",
-                url : "/system/user/getRoles",
+                // 济南
+                // url : "/system/user/getRoles?token="+token,
+                // 天津
+                url : "/admin/system/user/getRoles?token="+token,
                 success : function(result) {
                     var html = '';
                     $(result).each(function(index,element){

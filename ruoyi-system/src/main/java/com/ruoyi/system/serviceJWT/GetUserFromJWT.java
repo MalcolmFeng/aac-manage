@@ -18,10 +18,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class GetUserFromJWT {
 
     // 济南
-    private static String loginUrl = "http://172.19.221.76:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.19.221.76:7000/handler/code?target="; // 认证中心登录页
+//    private static String loginUrl = "http://172.19.221.76:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.19.221.76:7000/handler/code?target="; // 认证中心登录页
 
     // 天津
-//    private static String loginUrl = "http://172.26.212.224:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.26.212.224:7000/admin/handler/code?target="; // 认证中心登录页
+    private static String loginUrl = "http://172.26.212.224:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.26.212.224:7000/admin/handler/code?target="; // 认证中心登录页
 
     public static SysUser getUserFromJWT(){
         HttpServletRequest request = ServletUtils.getRequest();
