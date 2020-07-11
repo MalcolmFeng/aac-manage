@@ -62,7 +62,7 @@
 				</div>
 				
 		        <div class="btn-group-sm" id="toolbar" role="group">
-					<a class="btn btn-success" onclick="$.operate.addTab()" th:if="${#strings.contains(perms,'system:user:add') || #strings.contains(perms,'*:*:*')}">
+					<a class="btn btn-success" onclick="addUserPage()"  th:if="${#strings.contains(perms,'system:user:add') || #strings.contains(perms,'*:*:*')}">
 		                <i class="fa fa-plus"></i> 新增
 		            </a>
 		             <a class="btn btn-primary single disabled" onclick="$.operate.editTab()" th:if="${#strings.contains(perms,'system:user:edit') || #strings.contains(perms,'*:*:*')}"  >
@@ -78,7 +78,7 @@
 			            <i class="fa fa-download"></i> 导出
 			        </a>
 		        </div>
-		        
+				<p id="token" style="display: none" th:text="${#httpServletRequest.getParameter('token')}"></p>
 		        <div class="col-sm-12 select-table table-striped">
 				    <table id="bootstrap-table"></table>
 				</div>
@@ -181,7 +181,14 @@
 		    };
 		    $.table.init(options);
 		}
-		
+
+		function addUserPage(){
+			var token = $("#token").text();
+			// 济南
+			// window.location.href="/system/user/add?token="+token;
+			// 天津
+			window.location.href="/admin/system/user/add?token="+token;
+		}
 		function queryDeptTree()
 		{
 			var url = ctx + "system/dept/treeData";

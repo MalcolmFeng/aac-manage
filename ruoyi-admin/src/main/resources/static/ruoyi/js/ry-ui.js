@@ -843,13 +843,22 @@ var table = {
             },
             // 选卡页方式打开
             openTab: function (title, url) {
-            	createMenuItem(url, title);
+				try{
+            		createMenuItem(url, title);
+				}catch (e) {
+					console.log(e);
+				}
             },
             // 选卡页同一页签打开
             parentTab: function (title, url) {
-            	var dataId = window.frameElement.getAttribute('data-id');
-            	createMenuItem(url, title);
-            	closeItem(dataId);
+    			try{
+					var dataId = window.frameElement.getAttribute('data-id');
+					createMenuItem(url, title);
+					closeItem(dataId);
+				}catch (e) {
+					console.log(e);
+				}
+
             },
             // 关闭选项卡
             closeTab: function (dataId) {
@@ -991,10 +1000,15 @@ var table = {
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
-            	table.set();
-                $.modal.openTab("添加" + table.options.modalName, $.operate.addUrl(id));
-            },
-            // 添加信息 全屏
+				try {
+					table.set();
+					$.modal.openTab("添加" + table.options.modalName, $.operate.addUrl(id));
+				}catch (e) {
+					console.log(e);
+				}
+
+			},
+	// 添加信息 全屏
             addFull: function(id) {
             	table.set();
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
