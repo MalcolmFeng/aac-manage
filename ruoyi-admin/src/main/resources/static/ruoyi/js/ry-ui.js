@@ -1131,10 +1131,8 @@ var table = {
         	        success: function(result) {
         	        	if (typeof callback == "function") {
         	        	    callback(result);
-        	        	}else{
-							window.history.back();  //返回上一页
-						}
-        	        	// $.operate.successTabCallback(result);
+        	        	}
+        	        	$.operate.successCallback(result);
         	        },
 					fail: function (result) {
 						$.modal.alertError(result.msg);
