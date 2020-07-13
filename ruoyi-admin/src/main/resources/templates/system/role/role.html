@@ -135,7 +135,9 @@
 		/* 角色管理-分配用户 */
 		function authUser(roleId) {
 		    var url = prefix + '/authUser/' + roleId;
-		    $.modal.open("分配用户", url);
+		    console.log(url);
+			table.set();
+			$.modal.openWithoutBtn("分配用户",url);
 		}
 		
 		/* 角色状态显示 */
