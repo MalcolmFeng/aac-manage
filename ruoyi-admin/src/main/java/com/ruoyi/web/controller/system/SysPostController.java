@@ -30,6 +30,9 @@ import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.service.ISysPostService;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 岗位信息操作处理
  * 
@@ -46,7 +49,7 @@ public class SysPostController extends BaseController
 
 //    @RequiresPermissions("system:post:view")
     @GetMapping()
-    public ModelAndView operlog()
+    public ModelAndView operlog(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
         modelAndView.setViewName(prefix+"/post");

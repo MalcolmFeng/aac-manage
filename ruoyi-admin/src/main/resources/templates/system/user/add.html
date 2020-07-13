@@ -140,8 +140,7 @@
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
             <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
-            <p id="token" style="display: none" th:text="${#httpServletRequest.getParameter('token')}"></p>
+<!--            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>-->
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -230,7 +229,15 @@
 	        	data.push({"name": "roleIds", "value": roleIds});
 	        	data.push({"name": "postIds", "value": postIds});
 	        	data.push({"name": "clientIds", "value":client});
-	        	$.operate.saveTab(prefix + "/add", data);
+	        	$.operate.saveTab(prefix + "/add", data,function (result) {
+                    if (result.code == web_status.SUCCESS) {
+                        window.history.back();  //返回上一页
+                    } else if (result.code == web_status.WARNING) {
+                        $.modal.alertWarning(result.msg)
+                    } else {
+                        $.modal.alertError(result.msg);
+                    }
+                });
 	        }
 	    }
          
@@ -275,16 +282,11 @@
                 placeholder: "请选择岗位",
                 allowClear: true
             });
-            var token = $("#token").text();
-            console.log(token);
 
             $.ajax({
                 type : "POST",
                 contentType: "application/json;charset=UTF-8",
-                // 济南
-                // url : "/system/user/getRoles?token="+token,
-                // 天津
-                url : "/admin/system/user/getRoles?token="+token,
+                url : prefix+"/getRoles",
                 success : function(result) {
                     var html = '';
                     $(result).each(function(index,element){

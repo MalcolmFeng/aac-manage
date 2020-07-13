@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,9 @@ import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.service.ISysDeptService;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 部门信息
  * 
@@ -47,9 +51,12 @@ public class SysDeptController extends BaseController
 
 //    @RequiresPermissions("system:dept:view")
     @GetMapping()
-    public ModelAndView dept()
+    public ModelAndView dept(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         modelAndView.setViewName(prefix+"/dept");
         return modelAndView;
 //        return prefix + "/dept";
@@ -75,9 +82,10 @@ public class SysDeptController extends BaseController
      * 新增部门
      */
     @GetMapping("/add/{parentId}")
-    public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
+    public String add(@PathVariable("parentId") Long parentId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("dept", deptService.selectDeptById(parentId));
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/add";
     }
 
@@ -107,7 +115,7 @@ public class SysDeptController extends BaseController
      * 修改
      */
     @GetMapping("/edit/{deptId}")
-    public String edit(@PathVariable("deptId") Long deptId, ModelMap mmap)
+    public String edit(@PathVariable("deptId") Long deptId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         SysDept dept = deptService.selectDeptById(deptId);
         if (StringUtils.isNotNull(dept) && 100L == deptId)
@@ -115,6 +123,7 @@ public class SysDeptController extends BaseController
             dept.setParentName("无");
         }
         mmap.put("dept", dept);
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/edit";
     }
 
@@ -182,10 +191,11 @@ public class SysDeptController extends BaseController
      */
     @GetMapping(value = { "/selectDeptTree/{deptId}", "/selectDeptTree/{deptId}/{excludeId}" })
     public String selectDeptTree(@PathVariable("deptId") Long deptId,
-            @PathVariable(value = "excludeId", required = false) String excludeId, ModelMap mmap)
+            @PathVariable(value = "excludeId", required = false) String excludeId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("dept", deptService.selectDeptById(deptId));
         mmap.put("excludeId", excludeId);
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/tree";
     }
 

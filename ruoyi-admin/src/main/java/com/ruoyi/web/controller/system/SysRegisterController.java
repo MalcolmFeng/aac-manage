@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -11,6 +12,9 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.framework.shiro.service.SysRegisterService;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.service.ISysConfigService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 注册验证
@@ -27,8 +31,8 @@ public class SysRegisterController extends BaseController
     private ISysConfigService configService;
 
     @GetMapping("/register")
-    public String register()
-    {
+    public String register(HttpServletRequest request, HttpServletResponse response) {
+        TokenCookieHandler.setCookieToken(request,response);
         return "register";
     }
 

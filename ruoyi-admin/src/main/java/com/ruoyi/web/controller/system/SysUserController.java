@@ -13,6 +13,7 @@ import com.ruoyi.system.service.*;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ import com.ruoyi.framework.shiro.service.SysPasswordService;
 import com.ruoyi.framework.util.ShiroUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -76,6 +78,9 @@ public class SysUserController extends BaseController
     public ModelAndView user(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         modelAndView.setViewName(prefix+"/user");
         return modelAndView;
 
@@ -159,7 +164,7 @@ public class SysUserController extends BaseController
      * 新增用户
      */
     @GetMapping("/add")
-    public String add(ModelMap mmap)
+    public String add(ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
@@ -175,6 +180,9 @@ public class SysUserController extends BaseController
         mmap.put("roles", roleService.selectRoleList(userId,role));
         mmap.put("posts", postService.selectPostList(post,null , (long) 106 ));
         mmap.put("clients",clientService.selectClientList(null));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/add";
     }
 
@@ -238,8 +246,11 @@ public class SysUserController extends BaseController
      * 注册
      */
     @GetMapping("/register")
-    public String register(ModelMap mmap) {
+    public String register(ModelMap mmap,HttpServletRequest request, HttpServletResponse response) {
         mmap.put("clients",clientService.selectClientList(null));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/register_new";
     }
 
@@ -289,7 +300,7 @@ public class SysUserController extends BaseController
      * 修改用户
      */
     @GetMapping("/edit/{userId}")
-    public String edit(@PathVariable("userId") Long userId, ModelMap mmap)
+    public String edit(@PathVariable("userId") Long userId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         String clientId = jwtPayload.getString("clients");
@@ -297,6 +308,9 @@ public class SysUserController extends BaseController
         mmap.put("user", userService.selectUserById(userId));
         mmap.put("roles", roleService.selectRolesByUserId(userId,clientId));
         mmap.put("posts", postService.selectPostsByUserId(userId,clientId));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/edit";
     }
 
@@ -325,9 +339,12 @@ public class SysUserController extends BaseController
 //    @RequiresPermissions("system:user:resetPwd")
     @Log(title = "重置密码", businessType = BusinessType.UPDATE)
     @GetMapping("/resetPwd/{userId}")
-    public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap)
+    public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("user", userService.selectUserById(userId));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/resetPwd";
     }
 
@@ -356,13 +373,16 @@ public class SysUserController extends BaseController
      * 进入授权角色页
      */
     @GetMapping("/authRole/{userId}")
-    public String authRole(@PathVariable("userId") Long userId, ModelMap mmap)
+    public String authRole(@PathVariable("userId") Long userId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         SysUser user = userService.selectUserById(userId);
         // 获取用户所属的角色列表
         List<SysUserRole> userRoles = userService.selectUserRoleByUserId(userId);
         mmap.put("user", user);
         mmap.put("userRoles", userRoles);
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/authRole";
     }
 

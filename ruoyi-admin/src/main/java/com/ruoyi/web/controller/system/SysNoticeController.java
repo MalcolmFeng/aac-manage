@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.system;
 import java.util.List;
 
 import com.ruoyi.web.controller.tool.MVConstructor;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.service.ISysNoticeService;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 公告 信息操作处理
  * 
@@ -38,9 +42,12 @@ public class SysNoticeController extends BaseController
 
 //    @RequiresPermissions("system:notice:view")
     @GetMapping()
-    public ModelAndView notice()
+    public ModelAndView notice(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         modelAndView.setViewName(prefix+"/notice");
         return modelAndView;
 //        return prefix + "/notice";

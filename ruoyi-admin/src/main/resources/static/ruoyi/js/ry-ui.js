@@ -1002,7 +1002,7 @@ var table = {
             addTab: function (id) {
 				try {
 					table.set();
-					$.modal.openTab("添加" + table.options.modalName, $.operate.addUrl(id));
+					$.modal.open("添加" + table.options.modalName, $.operate.addUrl(id));
 				}catch (e) {
 					console.log(e);
 				}
@@ -1037,7 +1037,7 @@ var table = {
             // 修改信息，以tab页展现
             editTab: function(id) {
             	table.set();
-            	$.modal.openTab("修改" + table.options.modalName, $.operate.editUrl(id));
+            	$.modal.open("修改" + table.options.modalName, $.operate.editUrl(id));
             },
             // 修改信息 全屏
             editFull: function(id) {
@@ -1128,15 +1128,17 @@ var table = {
         	        type: "post",
         	        dataType: "json",
         	        data: data,
-        	        beforeSend: function () {
-        	        	$.modal.loading("正在处理中，请稍后...");
-        	        },
         	        success: function(result) {
         	        	if (typeof callback == "function") {
         	        	    callback(result);
-        	        	}
-        	        	$.operate.successTabCallback(result);
-        	        }
+        	        	}else{
+							window.history.back();  //返回上一页
+						}
+        	        	// $.operate.successTabCallback(result);
+        	        },
+					fail: function (result) {
+						$.modal.alertError(result.msg);
+					}
         	    };
         	    $.ajax(config)
             },

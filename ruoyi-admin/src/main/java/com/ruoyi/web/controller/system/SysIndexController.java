@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.utils.JWTUtil;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -42,7 +43,7 @@ public class SysIndexController extends BaseController
 
     // 系统首页
     @GetMapping("/index")
-    public String index(ModelMap mmap) throws IOException {
+    public String index(ModelMap mmap,HttpServletRequest request, HttpServletResponse response) throws IOException {
         SysUser user = GetUserFromJWT.getUserFromJWT();
 
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
@@ -61,6 +62,9 @@ public class SysIndexController extends BaseController
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
         mmap.put("copyrightYear", Global.getCopyrightYear());
         mmap.put("demoEnabled", Global.isDemoEnabled());
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return "index";
     }
 

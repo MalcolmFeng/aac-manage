@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,10 +56,13 @@ public class SysRoleController extends BaseController
 
 //    @RequiresPermissions("system:role:view")
     @GetMapping()
-    public ModelAndView role()
+    public ModelAndView role(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
         modelAndView.setViewName(prefix+"/role");
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return modelAndView;
 //        return prefix + "/role";
     }
@@ -104,8 +108,10 @@ public class SysRoleController extends BaseController
      * 新增角色
      */
     @GetMapping("/add")
-    public String add()
+    public String add(HttpServletRequest request, HttpServletResponse response)
     {
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/add";
     }
 
@@ -142,9 +148,12 @@ public class SysRoleController extends BaseController
      * 修改角色
      */
     @GetMapping("/edit/{roleId}")
-    public String edit(@PathVariable("roleId") Long roleId, ModelMap mmap)
+    public String edit(@PathVariable("roleId") Long roleId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("role", roleService.selectRoleById(roleId));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/edit";
     }
 
@@ -175,9 +184,12 @@ public class SysRoleController extends BaseController
      * 角色分配数据权限
      */
     @GetMapping("/authDataScope/{roleId}")
-    public String authDataScope(@PathVariable("roleId") Long roleId, ModelMap mmap)
+    public String authDataScope(@PathVariable("roleId") Long roleId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("role", roleService.selectRoleById(roleId));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/dataScope";
     }
 
@@ -240,8 +252,10 @@ public class SysRoleController extends BaseController
      * 选择菜单树
      */
     @GetMapping("/selectMenuTree")
-    public String selectMenuTree()
+    public String selectMenuTree(HttpServletRequest request, HttpServletResponse response)
     {
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/tree";
     }
 
@@ -263,12 +277,15 @@ public class SysRoleController extends BaseController
      */
 //    @RequiresPermissions("system:role:edit")
     @GetMapping("/authUser/{roleId}")
-    public ModelAndView authUser(@PathVariable("roleId") Long roleId, ModelMap mmap)
+    public ModelAndView authUser(@PathVariable("roleId") Long roleId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("role", roleService.selectRoleById(roleId));
 
         ModelAndView modelAndView = MVConstructor.MVConstruct();
         modelAndView.setViewName(prefix+"/authUser");
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return modelAndView;
 
 //        return prefix + "/authUser";
@@ -313,9 +330,12 @@ public class SysRoleController extends BaseController
      * 选择用户
      */
     @GetMapping("/authUser/selectUser/{roleId}")
-    public String selectUser(@PathVariable("roleId") Long roleId, ModelMap mmap)
+    public String selectUser(@PathVariable("roleId") Long roleId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         mmap.put("role", roleService.selectRoleById(roleId));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/selectUser";
     }
 

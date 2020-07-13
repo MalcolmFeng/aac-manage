@@ -4,6 +4,7 @@ import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,12 +56,15 @@ public class SysProfileController extends BaseController
      * 个人信息
      */
     @GetMapping()
-    public String profile(ModelMap mmap)
+    public String profile(ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         SysUser user = GetUserFromJWT.getUserFromJWT();
         mmap.put("user", user);
         mmap.put("roleGroup", userService.selectUserRoleGroup(user.getUserId()));
         mmap.put("postGroup", userService.selectUserPostGroup(user.getUserId()));
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         return prefix + "/profile";
     }
 

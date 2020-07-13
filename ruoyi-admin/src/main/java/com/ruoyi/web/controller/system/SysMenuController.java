@@ -9,6 +9,7 @@ import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
 import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.MVConstructor;
+import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,9 +51,12 @@ public class SysMenuController extends BaseController
 
 //    @RequiresPermissions("system:menu:view")
     @GetMapping()
-    public ModelAndView menu()
+    public ModelAndView menu(HttpServletRequest request, HttpServletResponse response)
     {
         ModelAndView modelAndView = MVConstructor.MVConstruct();
+
+        TokenCookieHandler.setCookieToken(request,response);
+
         modelAndView.setViewName(prefix+"/menu");
         return modelAndView;
 //        return prefix + "/menu";
@@ -119,7 +123,7 @@ public class SysMenuController extends BaseController
      * 新增
      */
     @GetMapping("/add/{parentId}")
-    public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
+    public String add(@PathVariable("parentId") Long parentId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         SysMenu menu = null;
         if (0L != parentId)
@@ -137,6 +141,7 @@ public class SysMenuController extends BaseController
             menu.setMenuName("主目录");
         }
         mmap.put("menu", menu);
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/add";
     }
 
@@ -167,13 +172,14 @@ public class SysMenuController extends BaseController
      * 修改菜单
      */
     @GetMapping("/edit/{menuId}")
-    public String edit(@PathVariable("menuId") Long menuId, ModelMap mmap)
+    public String edit(@PathVariable("menuId") Long menuId, ModelMap mmap, HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
 
         mmap.put("menu", menuService.selectMenuById(menuId, clientId));
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/edit";
     }
 
@@ -199,8 +205,9 @@ public class SysMenuController extends BaseController
      * 选择菜单图标
      */
     @GetMapping("/icon")
-    public String icon()
+    public String icon(HttpServletRequest request, HttpServletResponse response)
     {
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/icon";
     }
 
@@ -248,13 +255,14 @@ public class SysMenuController extends BaseController
      * 选择菜单树
      */
     @GetMapping("/selectMenuTree/{menuId}")
-    public String selectMenuTree(@PathVariable("menuId") Long menuId, ModelMap mmap)
+    public String selectMenuTree(@PathVariable("menuId") Long menuId, ModelMap mmap,HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         Long userId = jwtPayload.getLong("userId");
         String clientId = jwtPayload.getString("clients");
 
         mmap.put("menu", menuService.selectMenuById(menuId,clientId));
+        TokenCookieHandler.setCookieToken(request,response);
         return prefix + "/tree";
     }
 }

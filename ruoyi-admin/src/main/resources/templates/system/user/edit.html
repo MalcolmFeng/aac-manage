@@ -121,7 +121,7 @@
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
             <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+<!--            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>-->
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -191,7 +191,9 @@
 	        	data.push({"name": "status", "value": status});
 	        	data.push({"name": "roleIds", "value": roleIds});
 	        	data.push({"name": "postIds", "value": postIds});
-	        	$.operate.saveTab(prefix + "/edit", data);
+	        	$.operate.saveTab(prefix + "/edit", data,function () {
+                    window.history.back();  //返回上一页
+                });
 	        }
 	    }
 
