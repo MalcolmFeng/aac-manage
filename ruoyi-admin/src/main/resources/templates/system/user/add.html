@@ -140,7 +140,7 @@
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
             <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-<!--            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>-->
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -222,15 +222,33 @@
 	        if ($.validate.form()) {
 	        	var data = $("#form-user-add").serializeArray();
 	        	var status = $("input[id='status']").is(':checked') == true ? 0 : 1;
-                var client = $("input[name='client']:checked").val();
 	        	var roleIds = $.form.selectCheckeds("role");
 	        	var postIds = $.form.selectSelects("post");
+                var client = $("input[name='client']:checked").val();
+
+                // 选择了租户，但选择了多个角色
+	        	if (client != undefined){
+	        	    if (roleIds.indexOf(",") != -1 ){
+	        	        alert("租户管理员不允许分配其他角色");
+	        	        return;
+                    }
+                }
+	        	// 选择租户管理员角色，但没选择租户
+                if (roleIds.indexOf("106") != -1 ){
+                    if(client == undefined){
+                        alert("租户管理员必须关联租户");
+                        return;
+                    }
+                }
+
+
 	        	data.push({"name": "status", "value": status});
 	        	data.push({"name": "roleIds", "value": roleIds});
 	        	data.push({"name": "postIds", "value": postIds});
 	        	data.push({"name": "clientIds", "value":client});
 	        	$.operate.saveTab(prefix + "/add", data,function (result) {
                     if (result.code == web_status.SUCCESS) {
+                        $.modal.alertSuccess("创建成功！");
                         window.history.back();  //返回上一页
                     } else if (result.code == web_status.WARNING) {
                         $.modal.alertWarning(result.msg)
@@ -240,6 +258,10 @@
                 });
 	        }
 	    }
+
+	    function closeItem(){
+            window.location.href=ctx + "system/user";
+        }
          
         /*用户管理-新增-选择部门树*/
         function selectDeptTree() {

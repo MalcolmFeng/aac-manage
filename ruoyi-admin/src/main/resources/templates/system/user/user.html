@@ -240,7 +240,7 @@
 		/* 用户管理-分配角色 */
 		function authRole(userId) {
 		    var url = prefix + '/authRole/' + userId;
-		    $.modal.open("用户分配角色", url);
+		    $.modal.openWithoutBtn("用户分配角色", url);
 		}
 		
 		/* 用户状态显示 */

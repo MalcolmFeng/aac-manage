@@ -1,10 +1,6 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.ruoyi.system.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +54,10 @@ public class SysRoleServiceImpl implements ISysRoleService
             // 超级管理员只查询自己创建的角色（暂定）
             SysRole sysRole = new SysRole();
             sysRole.setCreateBy(role.getCreateBy());
+            sysRole.setStatus(role.getStatus());
+            sysRole.setRoleName(role.getRoleName());
+            sysRole.setRoleKey(role.getRoleKey());
+            sysRole.setParams(role.getParams());
             roleList = roleMapper.selectRoleList(sysRole);
         }
         else
@@ -95,13 +95,13 @@ public class SysRoleServiceImpl implements ISysRoleService
      * @return 角色列表
      */
     @Override
-    public List<SysRole> selectRolesByUserId(Long userId,String clientId)
+    public List<SysRole> selectRolesByUserId(Long userId,String clientId,SysRole sysRole)
     {
+        // 查询当前用户所有已分配的角色
         List<SysRole> userRoles = roleMapper.selectRolesByUserId(userId);
 
-        SysRole roleParam = new SysRole();
-        roleParam.setClientId(clientId);
-        List<SysRole> roles = selectRoleList(userId,roleParam);
+        // 查询所有角色
+        List<SysRole> roles = selectRoleList((Long) sysRole.getParams().get("loginId"),sysRole);
 
         for (SysRole role : roles)
         {

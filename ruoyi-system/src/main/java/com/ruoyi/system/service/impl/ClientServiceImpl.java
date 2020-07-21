@@ -4,6 +4,7 @@ import com.ruoyi.system.domain.*;
 import com.ruoyi.system.mapper.*;
 import com.ruoyi.system.service.IClientService;
 import org.apache.ibatis.annotations.Param;
+import org.apache.shiro.crypto.hash.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 租户 业务层处理
@@ -39,12 +42,19 @@ public class ClientServiceImpl implements IClientService {
     /**
      * 根据条件分页查询用户列表
      * 
-     * @param user 用户信息
+     * @param client 租户信息
      * @return 用户信息集合信息
      */
     @Override
-    public List<Client> selectClientList(Client user) {
-        return clientDetailsMapper.selectClientList(user);
+    public List<Client> selectClientList(Client client) {
+        Map<String,Object> params = new HashMap<>();
+        params.put("beginTime","");
+        params.put("endTime","");
+        if (client == null){
+            client = new Client();
+        }
+        client.setParams(params);
+        return clientDetailsMapper.selectClientList(client);
     }
 
     @Override
@@ -69,6 +79,13 @@ public class ClientServiceImpl implements IClientService {
 
     @Override
     public int deleteClientByIds(String clientId) {
-        return clientDetailsMapper.deleteClientByIds(clientId);
+        String[] ids = null;
+        if (clientId.contains(",")){
+            ids = clientId.split(",");
+        }
+        for (int i = 0;i<ids.length; i++){
+            clientDetailsMapper.deleteClientByIds(ids[i]);
+        }
+        return 1;
     }
 }

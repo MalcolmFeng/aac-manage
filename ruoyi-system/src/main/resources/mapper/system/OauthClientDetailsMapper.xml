@@ -22,9 +22,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			oauth_client_details
 		where
 			del_flag != '2'
-			and status != 2
-			<if test="client_id != '' and  client_id != null">
-				and client_id = #{client_id}
+			<if test="client_name != null and client_name != ''">
+				AND client_name like concat('%', #{client_name}, '%')
+			</if>
+			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
 			</if>
 	</select>
 

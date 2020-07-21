@@ -58,9 +58,21 @@ public class SysRole extends BaseEntity
     /** 部门组（数据权限） */
     private Long[] deptIds;
 
+    private String createBy;
+
     public SysRole()
     {
 
+    }
+
+    @Override
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    @Override
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
     public SysRole(Long roleId)

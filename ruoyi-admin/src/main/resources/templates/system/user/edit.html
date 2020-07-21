@@ -105,6 +105,18 @@
                     </div>
                 </div>
             </div>
+            <div id="clientRadio" class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">租户应用：</label>
+                        <div class="col-xs-10">
+                            <label th:each="client:${clients}" class="check-box">
+                                <input name="client" type="radio" th:value="${client.client_id}" th:text="${client.client_name}" th:attr ="checked=${client.client_id eq user.clientId?true:false}">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <h4 class="form-header h4">其他信息</h4>
             <div class="row">
                 <div class="col-sm-12">
@@ -121,7 +133,8 @@
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
             <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-<!--            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>-->
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+            <p id="userClientId" style="display: none" th:text="${user.clientId}"></p>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -188,14 +201,36 @@
 	        	var status = $("input[id='status']").is(':checked') == true ? 0 : 1;
 	        	var roleIds = $.form.selectCheckeds("role");
 	        	var postIds = $.form.selectSelects("post");
+                var client = $("input[name='client']:checked").val();
+
+                // 选择了租户，但选择了多个角色
+                if (client != undefined){
+                    if (roleIds.indexOf(",") != -1 ){
+                        alert("租户管理员不允许分配其他角色");
+                        return;
+                    }
+                }
+                // 选择租户管理员角色，但没选择租户
+                if (roleIds.indexOf("106") != -1 ){
+                    if(client == undefined){
+                        alert("租户管理员必须关联租户");
+                        return;
+                    }
+                }
+
+
 	        	data.push({"name": "status", "value": status});
 	        	data.push({"name": "roleIds", "value": roleIds});
 	        	data.push({"name": "postIds", "value": postIds});
+                data.push({"name": "clientIds", "value":client});
 	        	$.operate.saveTab(prefix + "/edit", data,function () {
                     window.history.back();  //返回上一页
                 });
 	        }
 	    }
+        function closeItem(){
+            window.location.href=ctx + "system/user";
+        }
 
         /*用户管理-修改-选择部门树*/
         function selectDeptTree() {
@@ -225,7 +260,14 @@
                 placeholder: "请选择岗位",
                 allowClear: true
             });
-        })
+        });
+
+        // $(document).ready(function () {
+        //     var client = $("#userClientId").text();
+        //     console.log(client);
+        //     $("input[type=radio][value='"+client+"']").prop("checked",true);
+        // });
+
     </script>
 </body>
 </html>

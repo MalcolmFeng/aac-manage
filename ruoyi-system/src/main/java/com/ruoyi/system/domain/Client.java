@@ -3,6 +3,7 @@ package com.ruoyi.system.domain;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 import java.util.Date;
+import java.util.Map;
 
 public class Client extends BaseEntity {
 
@@ -26,6 +27,8 @@ public class Client extends BaseEntity {
     private Date create_time;
     private Date approve_time;
     private int status = -1;
+
+    private Map<String,Object> params;
 
     public Date getCreate_time() {
         return create_time;
@@ -169,5 +172,15 @@ public class Client extends BaseEntity {
 
     public void setAutoapprove(String autoapprove) {
         this.autoapprove = autoapprove;
+    }
+
+    @Override
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    @Override
+    public void setParams(Map<String, Object> params) {
+        this.params = params;
     }
 }

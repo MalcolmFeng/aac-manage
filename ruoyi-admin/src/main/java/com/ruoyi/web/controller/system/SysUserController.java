@@ -1,6 +1,8 @@
 package com.ruoyi.web.controller.system;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
@@ -216,14 +218,6 @@ public class SysUserController extends BaseController
         {
             return error("新增用户'" + user.getLoginName() + "'失败，登录账号已存在");
         }
-        else if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
-        {
-            return error("新增用户'" + user.getLoginName() + "'失败，手机号码已存在");
-        }
-        else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
-        {
-            return error("新增用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
-        }
         String salt = BCrypt.gensalt();
         user.setSalt(salt);
         user.setPassword(BcryptUtil.encode(user.getPassword(),salt));
@@ -304,10 +298,20 @@ public class SysUserController extends BaseController
     {
         JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
         String clientId = jwtPayload.getString("clients");
+        String loginName = jwtPayload.getString("loginName");
+        Long loginId = jwtPayload.getLong("userId");
+
+        SysRole role = new SysRole();
+        Map<String,Object> params = new HashMap<>();
+        params.put("loginId",loginId);
+        role.setParams(params);
+        role.setClientId(clientId);
+        role.setCreateBy(loginName);
 
         mmap.put("user", userService.selectUserById(userId));
-        mmap.put("roles", roleService.selectRolesByUserId(userId,clientId));
+        mmap.put("roles", roleService.selectRolesByUserId(userId,clientId,role));
         mmap.put("posts", postService.selectPostsByUserId(userId,clientId));
+        mmap.put("clients",clientService.selectClientList(null));
 
         TokenCookieHandler.setCookieToken(request,response);
 
@@ -324,14 +328,18 @@ public class SysUserController extends BaseController
     public AjaxResult editSave(@Validated SysUser user)
     {
         userService.checkUserAllowed(user);
-        if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
-        {
-            return error("修改用户'" + user.getLoginName() + "'失败，手机号码已存在");
+
+        JSONObject jwtPayload = JWTUtil.getPayLoadJsonByJWT();
+        Long userId = jwtPayload.getLong("userId");
+        String clientId = jwtPayload.getString("clients");
+        user.setClientId(clientId);
+        user.setParentUserId(userId);
+
+        // 如果是管理员，并且给租户管理员关联了租户应用；
+        if ( SysUser.isAdmin(userId) && user.getClientIds()!=null && user.getClientIds().length > 0){
+            user.setClientId(user.getClientIds()[0]);
         }
-        else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
-        {
-            return error("修改用户'" + user.getLoginName() + "'失败，邮箱账号已存在");
-        }
+
         user.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(userService.updateUser(user));
     }
