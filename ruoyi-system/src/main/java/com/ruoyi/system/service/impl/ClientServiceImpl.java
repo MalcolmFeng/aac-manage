@@ -47,13 +47,16 @@ public class ClientServiceImpl implements IClientService {
      */
     @Override
     public List<Client> selectClientList(Client client) {
-        Map<String,Object> params = new HashMap<>();
-        params.put("beginTime","");
-        params.put("endTime","");
         if (client == null){
             client = new Client();
+
+            Map<String,Object> params = new HashMap<>();
+            params.put("beginTime","");
+            params.put("endTime","");
+
+            client.setParams(params);
         }
-        client.setParams(params);
+
         return clientDetailsMapper.selectClientList(client);
     }
 

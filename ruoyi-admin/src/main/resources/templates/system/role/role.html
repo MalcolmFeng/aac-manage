@@ -2,6 +2,8 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 	<th:block th:include="include :: header('角色列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
 </head>
 <body class="gray-bg">
 	<div class="container-div">
@@ -58,6 +60,8 @@
 		</div>
 	</div>
 	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
 	<script th:inline="javascript">
 		var editFlag = [[ ${#strings.contains(perms,'system:role:edit') || #strings.contains(perms,'*:*:*')}]];
 		var removeFlag = [[ ${#strings.contains(perms,'system:role:remove') || #strings.contains(perms,'*:*:*')}]];
