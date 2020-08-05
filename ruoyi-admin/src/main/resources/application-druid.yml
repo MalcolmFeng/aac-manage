@@ -9,12 +9,12 @@ spring:
 #                url: jdbc:mysql://172.26.143.166:38965/tj_ca?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
 #                username: tj_ca
 #                password: '&cc$jaAiGcd3HQ!l'
-#                url: jdbc:mysql://172.19.221.77:3306/oauth?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
-#                username: oauth
-#                password: oauth@0606
-                url: jdbc:mysql://172.19.221.59:3306/oauth?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
-                username: root
-                password: '%TGBnhy6'
+                url: jdbc:mysql://172.19.221.77:3306/oauth?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8
+                username: oauth
+                password: oauth@0606
+#                url: jdbc:mysql://172.19.221.59:3306/oauth?useUnicode=true&characterEncoding=utf-8&useOldAliasMetadataBehavior=true&useSSL=false&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+#                username: root
+#                password: '%TGBnhy6'
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -22,13 +22,9 @@ spring:
                 url: 
                 username: 
                 password: select u.user_id, u.dept_id, u.login_name, u.user_name, u.user_ty
-            # 初始连接数
             initialSize: 5
-            # 最小连接池数量
             minIdle: 10
-            # 最大连接池数量
             maxActive: 20
-            # 配置获取连接等待超时的时间
             maxWait: 60000
             # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
             timeBetweenEvictionRunsMillis: 60000

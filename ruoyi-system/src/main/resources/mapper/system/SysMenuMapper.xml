@@ -91,7 +91,10 @@
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
 		LEFT JOIN sys_role ro on ur.role_id = ro.role_id
-		where m.menu_id in (1,100,101,102,103,104) or m.parent_id in (100,101,102,103,104)
+		where m.menu_id = 1
+		or m.menu_id between 100 and 104
+		or m.menu_id between 609 and 616
+		or m.parent_id in (100,101,102,103,104)
 		order by m.parent_id, m.order_num
 	</select>
 

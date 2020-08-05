@@ -169,6 +169,7 @@ public class SysMenuServiceImpl implements ISysMenuService
         Long roleId = role.getRoleId();
         List<Ztree> ztrees = new ArrayList<Ztree>();
         List<SysMenu> menuList = selectMenuAll(userId, clientId,true);
+
         if (StringUtils.isNotNull(roleId))
         {
             List<String> roleMenuList = menuMapper.selectMenuTree(roleId);

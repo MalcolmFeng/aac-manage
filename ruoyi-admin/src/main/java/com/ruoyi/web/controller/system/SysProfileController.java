@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.system;
 import com.ruoyi.common.utils.security.BcryptUtil;
 import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
-import com.ruoyi.system.utils.JWTUtil;
 import com.ruoyi.web.controller.tool.TokenCookieHandler;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;

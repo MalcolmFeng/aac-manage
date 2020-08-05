@@ -1,7 +1,5 @@
 package com.ruoyi.framework.shiro.web.filter;
 
-import java.io.Serializable;
-import java.util.Deque;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -9,22 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import com.ruoyi.framework.util.TokenUtils;
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.session.SessionException;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.ShiroConstants;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.framework.util.ShiroUtils;
-import com.ruoyi.system.domain.SysUser;
 
 /**
  * 退出过滤器
@@ -58,9 +43,9 @@ public class LogoutFilter extends AccessControlFilter
 
 
 //        wrapper.sendRedirect("http://localhost:7000");
-//        wrapper.sendRedirect("http://172.19.221.76:7000/admin");  // 济南
+        wrapper.sendRedirect("http://172.19.221.76:7000/admin");  // 济南
 //        wrapper.sendRedirect("http://172.26.212.224:7000/admin");  // 天津
-        wrapper.sendRedirect("http://172.19.221.59:7000/admin");  // 测试
+//        wrapper.sendRedirect("http://172.19.221.59:7000/admin");  // 测试
 
         return false;
     }

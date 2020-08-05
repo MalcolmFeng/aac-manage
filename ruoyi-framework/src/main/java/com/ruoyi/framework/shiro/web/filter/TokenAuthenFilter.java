@@ -1,43 +1,32 @@
 package com.ruoyi.framework.shiro.web.filter;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
-import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.serviceJWT.GetUserFromJWT;
-import com.ruoyi.system.utils.JWTUtil;
 import org.apache.shiro.web.filter.AccessControlFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 鉴权过滤器
  */
 public class TokenAuthenFilter extends AccessControlFilter {
 
-//    private String authServer = "http://172.19.221.76:7002";
+    private String authServer = "http://172.19.221.76:7002";
 //    private String authServer = "http://localhost:7002";
 //    private String authServer = "http://172.26.212.224:7002";
-    private String authServer = "http://172.19.221.59:7002";
+//    private String authServer = "http://172.19.221.59:7002";
     private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 

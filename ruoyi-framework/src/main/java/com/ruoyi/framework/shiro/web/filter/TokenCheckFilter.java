@@ -1,7 +1,5 @@
 package com.ruoyi.framework.shiro.web.filter;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ruoyi.system.utils.SignerUtils;
 import com.ruoyi.framework.util.TokenUtils;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.utils.JWTUtil;
@@ -30,10 +28,10 @@ public class TokenCheckFilter extends AccessControlFilter {
     @Autowired
     ISysUserService sysUserService;
 
-//    private String authServer = "http://172.19.221.76:7002";
+    private String authServer = "http://172.19.221.76:7002";
 //    private String authServer = "http://localhost:7002";
 //    private String authServer = "http://172.26.212.224:7002";
-    private String authServer = "http://172.19.221.59:7002";
+//    private String authServer = "http://172.19.221.59:7002";
     private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
