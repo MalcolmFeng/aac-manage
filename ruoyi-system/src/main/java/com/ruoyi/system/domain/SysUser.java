@@ -203,7 +203,7 @@ public class SysUser extends BaseEntity
     @Size(min = 0, max = 50, message = "邮箱长度不能超过50个字符")
     public String getEmail()
     {
-        return email;
+        return email.replace("\r\n", "");
     }
 
     public void setEmail(String email)
@@ -214,7 +214,7 @@ public class SysUser extends BaseEntity
     @Size(min = 0, max = 11, message = "手机号码长度不能超过11个字符")
     public String getPhonenumber()
     {
-        return phonenumber;
+        return phonenumber.replace("\r\n", "");
     }
 
     public void setPhonenumber(String phonenumber)

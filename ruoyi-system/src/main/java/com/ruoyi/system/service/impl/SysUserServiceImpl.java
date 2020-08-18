@@ -1,6 +1,7 @@
 package com.ruoyi.system.service.impl;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,62 +38,95 @@ public class SysUserServiceImpl implements ISysUserService
     private static final Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
 
     @Autowired
-    private SysUserMapper userMapper;
+    SysUserMapper userMapper;
 
     @Autowired
-    private SysRoleMapper roleMapper;
+    SysRoleMapper roleMapper;
 
     @Autowired
-    private SysPostMapper postMapper;
+    SysPostMapper postMapper;
 
     @Autowired
-    private SysUserPostMapper userPostMapper;
+    SysUserPostMapper userPostMapper;
 
     @Autowired
-    private SysUserRoleMapper userRoleMapper;
+    SysUserRoleMapper userRoleMapper;
 
     @Autowired
-    private ISysConfigService configService;
+    ISysConfigService configService;
 
     /**
      * 根据条件分页查询用户列表
      * 
-     * @param user 用户信息
+     * @param userQ 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUserList(SysUser user)
+    public List<SysUser> selectUserList(SysUser userQ)
     {
-        List<SysUser> list = userMapper.selectUserList(user);
-        list.addAll(userMapper.selectApproveListUser(user));
-        return list;
+        List<SysUser> userList = userMapper.selectUserList(userQ);
+        for (SysUser user : userList){
+            if (user.getEmail() != null){
+                String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+                user.setEmail(emailEncode);
+            }
+            if (user.getPhonenumber() != null){
+                String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+                user.setPhonenumber(phoneEncode);
+            }
+        }
+        userList.addAll(userMapper.selectApproveListUser(userQ));
+        return userList;
+
     }
 
     /**
      * 根据条件分页查询已分配用户角色列表
      * 
-     * @param user 用户信息
+     * @param userQ 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectAllocatedList(SysUser user)
+    public List<SysUser> selectAllocatedList(SysUser userQ)
     {
-        return userMapper.selectAllocatedList(user);
+        List<SysUser> userList = userMapper.selectAllocatedList(userQ);
+        for (SysUser user : userList){
+            if (user.getEmail() != null){
+                String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+                user.setEmail(emailEncode);
+            }
+            if (user.getPhonenumber() != null){
+                String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+                user.setPhonenumber(phoneEncode);
+            }
+        }
+        return userList;
     }
 
     /**
      * 根据条件分页查询未分配用户角色列表
      * 
-     * @param user 用户信息
+     * @param userQ 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUnallocatedList(SysUser user)
+    public List<SysUser> selectUnallocatedList(SysUser userQ)
     {
-        return userMapper.selectUnallocatedList(user);
+        List<SysUser> userList = userMapper.selectUnallocatedList(userQ);
+        for (SysUser user : userList){
+            if (user.getEmail() != null){
+                String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+                user.setEmail(emailEncode);
+            }
+            if (user.getPhonenumber() != null){
+                String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+                user.setPhonenumber(phoneEncode);
+            }
+        }
+        return userList;
     }
 
     /**
@@ -104,7 +138,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserByLoginName(String userName)
     {
-        return userMapper.selectUserByLoginName(userName);
+        SysUser user = userMapper.selectUserByLoginName(userName);
+        if (user.getEmail() != null){
+            String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+            user.setPhonenumber(phoneEncode);
+        }
+        return user;
     }
 
     /**
@@ -116,7 +159,22 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserByPhoneNumber(String phoneNumber)
     {
-        return userMapper.selectUserByPhoneNumber(phoneNumber);
+        if (phoneNumber != null){
+            phoneNumber = Base64.getUrlEncoder().encodeToString(phoneNumber.getBytes());
+        }
+
+        SysUser user = userMapper.selectUserByPhoneNumber(phoneNumber);
+
+        if (user.getEmail() != null){
+            String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+            user.setPhonenumber(phoneEncode);
+        }
+
+        return user;
     }
 
     /**
@@ -128,7 +186,22 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserByEmail(String email)
     {
-        return userMapper.selectUserByEmail(email);
+        if (email != null){
+            email = Base64.getUrlEncoder().encodeToString(email.getBytes());
+        }
+
+        SysUser user = userMapper.selectUserByEmail(email);
+
+        if (user.getEmail() != null){
+            String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+            user.setPhonenumber(phoneEncode);
+        }
+
+        return user;
     }
 
     /**
@@ -140,7 +213,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserById(Long userId)
     {
-        return userMapper.selectUserById(userId);
+        SysUser user = userMapper.selectUserById(userId);
+        if (user.getEmail() != null){
+            String emailEncode = new String(Base64.getUrlDecoder().decode(user.getEmail().getBytes()));
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = new String(Base64.getUrlDecoder().decode(user.getPhonenumber().getBytes()));
+            user.setPhonenumber(phoneEncode);
+        }
+        return user;
     }
 
     /**
@@ -198,8 +280,17 @@ public class SysUserServiceImpl implements ISysUserService
     @Transactional
     public int insertUser(SysUser user)
     {
-        // 新增用户信息
+        // 新增用户信息  // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
         int rows = userMapper.insertUser(user);
+
         // 新增用户岗位关联
         insertUserPost(user);
         // 新增用户与角色管理
@@ -216,6 +307,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public boolean registerUser(SysUser user)
     {
+        // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
+
         user.setUserType(UserConstants.REGISTER_USER_TYPE);
         return userMapper.insertUser(user) > 0;
     }
@@ -239,6 +340,17 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
+
+        // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
+
         return userMapper.updateUser(user);
     }
 
@@ -251,6 +363,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public int updateUserInfo(SysUser user)
     {
+        // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
+
         return userMapper.updateUser(user);
     }
 
@@ -276,13 +398,21 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public int resetUserPwd(SysUser user)
     {
+        // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
         return updateUserInfo(user);
     }
 
     /**
      * 新增用户角色信息
-     * 
-     * @param user 用户对象
+     *
      */
     public void insertUserRole(Long userId, Long[] roleIds)
     {
@@ -517,6 +647,16 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public int changeStatus(SysUser user)
     {
+        // 对邮箱和手机号敏感信息进行Base64加密
+        if (user.getEmail() != null){
+            String emailEncode = Base64.getUrlEncoder().encodeToString(user.getEmail().getBytes());
+            user.setEmail(emailEncode);
+        }
+        if (user.getPhonenumber() != null){
+            String phoneEncode = Base64.getUrlEncoder().encodeToString(user.getPhonenumber().getBytes());
+            user.setPhonenumber(phoneEncode);
+        }
+
         return userMapper.updateUser(user);
     }
 }

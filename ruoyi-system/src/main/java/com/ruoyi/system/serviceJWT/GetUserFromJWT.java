@@ -17,11 +17,14 @@ import javax.servlet.http.HttpServletResponseWrapper;
 @Component
 public class GetUserFromJWT {
 
+    // 南宁
+//    private static String loginUrl = "http://172.16.69.230:443/oauth/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.16.69.230:443/admin/handler/code?target="; // 认证中心登录页
+
     // 济南
-    private static String loginUrl = "http://172.19.221.76:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.19.221.76:7000/admin/handler/code?target="; // 认证中心登录页
+//    private static String loginUrl = "http://172.19.221.76:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.19.221.76:7000/admin/handler/code?target="; // 认证中心登录页
 
     // 天津
-//    private static String loginUrl = "http://172.26.212.224:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.26.212.224:7000/admin/handler/code?target="; // 认证中心登录页
+    private static String loginUrl = "http://172.26.212.224:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.26.212.224:7000/admin/handler/code?target="; // 认证中心登录页
 
     // 测试
 //    private static String loginUrl = "http://172.19.221.59:7002/oauth/authorize?response_type=code&client_id=ruoyoiSystem&scope=all&redirect_uri=http://172.19.221.76:7000/admin/handler/code?target="; // 认证中心登录页

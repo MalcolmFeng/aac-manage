@@ -23,10 +23,11 @@ import java.util.Map;
  */
 public class TokenAuthenFilter extends AccessControlFilter {
 
-    private String authServer = "http://172.19.221.76:7002";
+//    private String authServer = "http://172.16.69.230:443/oauth"; //南宁
+    //    private String authServer = "http://172.19.221.76:7002";  // 济南
 //    private String authServer = "http://localhost:7002";
-//    private String authServer = "http://172.26.212.224:7002";
-//    private String authServer = "http://172.19.221.59:7002";
+    private String authServer = "http://172.26.212.224:7002";  // 天津
+//    private String authServer = "http://172.19.221.59:7002";// 测试
     private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
@@ -96,6 +97,11 @@ public class TokenAuthenFilter extends AccessControlFilter {
         // 鉴权失败，重定向到认证中心403界面
         response.sendRedirect(authServer + "/auth/unauth");
         return false;
+    }
+
+    public static void main(String[] args) {
+        String authorization = "Basic " + Base64.getUrlEncoder().encodeToString(( "manageOpen"+ ":" + "123456" ).getBytes());
+        System.out.println(authorization);
     }
 
 }

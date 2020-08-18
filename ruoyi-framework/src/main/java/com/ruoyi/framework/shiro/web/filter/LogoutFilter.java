@@ -43,8 +43,9 @@ public class LogoutFilter extends AccessControlFilter
 
 
 //        wrapper.sendRedirect("http://localhost:7000");
-        wrapper.sendRedirect("http://172.19.221.76:7000/admin");  // 济南
-//        wrapper.sendRedirect("http://172.26.212.224:7000/admin");  // 天津
+//        wrapper.sendRedirect("http://172.16.69.230:443/admin");  // 南宁
+//        wrapper.sendRedirect("http://172.19.221.76:7000/admin");  // 济南
+        wrapper.sendRedirect("http://172.26.212.224:7000/admin");  // 天津
 //        wrapper.sendRedirect("http://172.19.221.59:7000/admin");  // 测试
 
         return false;

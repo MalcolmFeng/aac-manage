@@ -28,10 +28,11 @@ public class TokenCheckFilter extends AccessControlFilter {
     @Autowired
     ISysUserService sysUserService;
 
-    private String authServer = "http://172.19.221.76:7002";
+//    private String authServer = "http://172.16.69.230:443/oauth"; //南宁
+//    private String authServer = "http://172.19.221.76:7002";  // 济南
 //    private String authServer = "http://localhost:7002";
-//    private String authServer = "http://172.26.212.224:7002";
-//    private String authServer = "http://172.19.221.59:7002";
+    private String authServer = "http://172.26.212.224:7002";  //天津
+//    private String authServer = "http://172.19.221.59:7002"; //测试
     private String clientId = "ruoyoiSystem";
     private String clientSecret = "123456";
 
